@@ -1,0 +1,964 @@
+<div class="space-y-6">
+  <!-- Toast Notification -->
+  @if (mensajeToast(); as toast) {
+    <div
+      role="status"
+      class="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-lg border text-sm font-medium shadow-lg transition-all animate-in fade-in"
+      [class.bg-emerald-950]="toast.tipo === 'exito'"
+      [class.border-emerald-600]="toast.tipo === 'exito'"
+      [class.text-emerald-200]="toast.tipo === 'exito'"
+      [class.bg-rose-950]="toast.tipo === 'error'"
+      [class.border-rose-600]="toast.tipo === 'error'"
+      [class.text-rose-200]="toast.tipo === 'error'"
+      [class.bg-amber-950]="toast.tipo === 'aviso'"
+      [class.border-amber-600]="toast.tipo === 'aviso'"
+      [class.text-amber-200]="toast.tipo === 'aviso'"
+    >
+      <mat-icon class="text-lg">
+        @if (toast.tipo === 'exito') { check_circle }
+        @else if (toast.tipo === 'error') { error }
+        @else { warning }
+      </mat-icon>
+      <span>{{ toast.texto }}</span>
+      <button
+        type="button"
+        (click)="mensajeToast.set(null)"
+        class="ml-2 hover:opacity-75 focus:outline-none"
+        aria-label="Cerrar notificación"
+      >
+        <mat-icon class="text-base">close</mat-icon>
+      </button>
+    </div>
+  }
+
+  <!-- Header / Action Bar -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800">
+    <div>
+      <h2 class="text-xl font-semibold text-slate-100 flex items-center gap-2">
+        <mat-icon class="text-indigo-400">tune</mat-icon>
+        Diseñador de Trámites — Gestión FCT (CRUD)
+      </h2>
+      <p class="text-sm text-slate-400 mt-0.5">
+        Administración de Formularios de Configuración de Trámites, gobernanza institucional y trazabilidad de solicitudes.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-3 shrink-0">
+      <button
+        type="button"
+        (click)="abrirCrear()"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-xs font-semibold rounded-lg shadow-sm hover:shadow-md hover:shadow-indigo-500/20 transition-all focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-slate-900 focus:outline-none cursor-pointer whitespace-nowrap"
+      >
+        <mat-icon class="text-base">add</mat-icon>
+        Crear FCT
+      </button>
+    </div>
+  </div>
+
+  <!-- Operational Metrics Strip (Tabular Numerals) -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div class="p-3.5 bg-slate-800/80 border border-slate-700/60 rounded-xl">
+      <div class="text-xs text-slate-400 font-medium">Total Trámites FCT</div>
+      <div class="text-2xl font-bold text-slate-100 font-mono tabular-nums mt-1">{{ totalFct() }}</div>
+      <div class="text-[11px] text-slate-500 mt-0.5">Catálogo maestro oficial</div>
+    </div>
+    <div class="p-3.5 bg-slate-800/80 border border-slate-700/60 rounded-xl">
+      <div class="text-xs text-emerald-400 font-medium flex items-center gap-1">
+        <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+        Trámites Activos
+      </div>
+      <div class="text-2xl font-bold text-emerald-300 font-mono tabular-nums mt-1">{{ activosFct() }}</div>
+      <div class="text-[11px] text-slate-500 mt-0.5">Disponibles para radicación</div>
+    </div>
+    <div class="p-3.5 bg-slate-800/80 border border-slate-700/60 rounded-xl">
+      <div class="text-xs text-slate-400 font-medium flex items-center gap-1">
+        <span class="inline-block w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+        Trámites Inactivos
+      </div>
+      <div class="text-2xl font-bold text-slate-400 font-mono tabular-nums mt-1">{{ inactivosFct() }}</div>
+      <div class="text-[11px] text-slate-500 mt-0.5">Inactivación lógica / histórico</div>
+    </div>
+    <div class="p-3.5 bg-slate-800/80 border border-slate-700/60 rounded-xl">
+      <div class="text-xs text-indigo-400 font-medium">Solicitudes Ciudadanas</div>
+      <div class="text-2xl font-bold text-indigo-300 font-mono tabular-nums mt-1">{{ totalSolicitudes() }}</div>
+      <div class="text-[11px] text-slate-500 mt-0.5">Expedientes vinculados protegidos</div>
+    </div>
+  </div>
+
+  <!-- Filters Toolbar (Read / Consultar) -->
+  <div class="p-4 bg-slate-800/60 border border-slate-700/60 rounded-xl space-y-3">
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <!-- Search Input -->
+      <div class="relative flex-1">
+        <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</mat-icon>
+        <input
+          type="text"
+          [value]="filtroTexto()"
+          (input)="filtroTexto.set($any($event.target).value)"
+          placeholder="Buscar FCT por nombre, código de trámite (ej: FCT-2026-001) o palabras clave..."
+          class="w-full pl-10 pr-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+        />
+        @if (filtroTexto()) {
+          <button
+            type="button"
+            (click)="filtroTexto.set('')"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-xs"
+            aria-label="Limpiar búsqueda"
+          >
+            <mat-icon class="text-sm">close</mat-icon>
+          </button>
+        }
+      </div>
+
+      <!-- Segmented Estado Filter -->
+      <div class="flex items-center gap-1 p-1 bg-slate-900 border border-slate-700/80 rounded-lg shrink-0">
+        <button
+          type="button"
+          (click)="filtroEstado.set('Todos')"
+          class="px-3 py-1.5 text-xs font-medium rounded transition-colors whitespace-nowrap"
+          [class.bg-slate-800]="filtroEstado() === 'Todos'"
+          [class.text-white]="filtroEstado() === 'Todos'"
+          [class.text-slate-400]="filtroEstado() !== 'Todos'"
+        >
+          Todos ({{ totalFct() }})
+        </button>
+        <button
+          type="button"
+          (click)="filtroEstado.set('Activo')"
+          class="px-3 py-1.5 text-xs font-medium rounded transition-colors whitespace-nowrap"
+          [class.bg-emerald-950]="filtroEstado() === 'Activo'"
+          [class.text-emerald-300]="filtroEstado() === 'Activo'"
+          [class.border]="filtroEstado() === 'Activo'"
+          [class.border-emerald-800]="filtroEstado() === 'Activo'"
+          [class.text-slate-400]="filtroEstado() !== 'Activo'"
+        >
+          Activos ({{ activosFct() }})
+        </button>
+        <button
+          type="button"
+          (click)="filtroEstado.set('Inactivo')"
+          class="px-3 py-1.5 text-xs font-medium rounded transition-colors whitespace-nowrap"
+          [class.bg-slate-800]="filtroEstado() === 'Inactivo'"
+          [class.text-slate-300]="filtroEstado() === 'Inactivo'"
+          [class.text-slate-400]="filtroEstado() !== 'Inactivo'"
+        >
+          Inactivos ({{ inactivosFct() }})
+        </button>
+      </div>
+
+      <!-- Filter by CdgEm (Empresa) -->
+      <div class="flex items-center gap-2 shrink-0">
+        <label for="filtroEmpresa" class="text-xs text-slate-400 font-medium whitespace-nowrap">Empresa (CdgEm):</label>
+        <select
+          id="filtroEmpresa"
+          [value]="filtroEmpresa()"
+          (change)="filtroEmpresa.set($any($event.target).value)"
+          class="py-1.5 px-2.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        >
+          <option value="Todas">Todas las entidades</option>
+          @for (emp of empresasDisponibles(); track emp) {
+            <option [value]="emp">{{ emp }}</option>
+          }
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Container (Read) -->
+  <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl overflow-hidden shadow-sm">
+    <div class="overflow-x-auto">
+      <table class="w-full text-left border-collapse text-xs">
+        <thead>
+          <tr class="bg-slate-900/80 border-b border-slate-700 text-slate-400 font-medium uppercase tracking-wider">
+            <th scope="col" class="py-3 px-4">Código FCT</th>
+            <th scope="col" class="py-3 px-4">Nombre del Trámite</th>
+            <th scope="col" class="py-3 px-4">Empresa (CdgEm)</th>
+            <th scope="col" class="py-3 px-4">Categoría</th>
+            <th scope="col" class="py-3 px-4 text-center">Campos</th>
+            <th scope="col" class="py-3 px-4 text-center">Solicitudes</th>
+            <th scope="col" class="py-3 px-4">Estado</th>
+            <th scope="col" class="py-3 px-4 text-right">Acciones</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-700/50">
+          @for (fct of fctsFiltrados(); track trackByFctId($index, fct)) {
+            <tr
+              class="hover:bg-slate-700/30 transition-colors"
+              [class.opacity-60]="fct.estado === 'Inactivo'"
+            >
+              <!-- Código FCT -->
+              <td class="py-3 px-4 font-mono font-semibold text-slate-200 whitespace-nowrap">
+                {{ fct.id }}
+              </td>
+
+              <!-- Nombre del Trámite -->
+              <td class="py-3 px-4">
+                <button
+                  type="button"
+                  (click)="abrirDetalle(fct)"
+                  class="font-semibold text-slate-100 hover:text-indigo-400 text-left transition-colors block text-sm"
+                >
+                  {{ fct.nombre }}
+                </button>
+                <div class="text-[11px] text-slate-400 truncate max-w-md mt-0.5">
+                  {{ fct.descripcion }}
+                </div>
+              </td>
+
+              <!-- CdgEm -->
+              <td class="py-3 px-4 font-mono text-slate-300 whitespace-nowrap">
+                <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-700/80 text-[11px]">
+                  {{ fct.cdgEm }}
+                </span>
+              </td>
+
+              <!-- Categoría -->
+              <td class="py-3 px-4 text-slate-300 whitespace-nowrap">
+                <span>{{ fct.categoria }}</span>
+                <span class="text-slate-500 ml-1">· {{ fct.plazoDias }}d</span>
+              </td>
+
+              <!-- Campos Asignados -->
+              <td class="py-3 px-4 text-center font-mono tabular-nums text-slate-300">
+                <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-slate-900/60 border border-slate-700 text-[11px]">
+                  <mat-icon class="text-xs text-indigo-400">format_list_bulleted</mat-icon>
+                  {{ fct.camposAsignados.length }}
+                </span>
+              </td>
+
+              <!-- Solicitudes Asociadas (Regla de negocio) -->
+              <td class="py-3 px-4 text-center font-mono tabular-nums whitespace-nowrap">
+                @if (fct.solicitudesAsociadas > 0) {
+                  <span class="text-indigo-300 font-semibold" title="Posee solicitudes asociadas. Protegido con Eliminación Lógica.">
+                    {{ fct.solicitudesAsociadas }} expedientes
+                  </span>
+                } @else {
+                  <span class="text-slate-500">
+                    0 expedientes
+                  </span>
+                }
+              </td>
+
+              <!-- Estado -->
+              <td class="py-3 px-4 whitespace-nowrap">
+                @if (fct.estado === 'Activo') {
+                  <span class="inline-flex items-center gap-1.5 text-xs text-emerald-400 font-medium">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    Activo
+                  </span>
+                } @else {
+                  <span class="inline-flex items-center gap-1.5 text-xs text-slate-400 font-medium">
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+                    Inactivo
+                  </span>
+                }
+              </td>
+
+              <!-- Acciones -->
+              <td class="py-3 px-4 text-right whitespace-nowrap">
+                <div class="inline-flex items-center gap-1">
+                  <!-- Diseñar / Asignar campos -->
+                  <button
+                    type="button"
+                    (click)="seleccionarParaDiseno(fct)"
+                    title="Diseñar trámite y asignar campos CET"
+                    class="p-1.5 text-slate-400 hover:text-indigo-300 hover:bg-slate-700/50 rounded transition-colors"
+                  >
+                    <mat-icon class="text-base">view_quilt</mat-icon>
+                  </button>
+
+                  <!-- Ver Detalle -->
+                  <button
+                    type="button"
+                    (click)="abrirDetalle(fct)"
+                    title="Ver detalle completo"
+                    class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 rounded transition-colors"
+                  >
+                    <mat-icon class="text-base">visibility</mat-icon>
+                  </button>
+
+                  <!-- Editar FCT -->
+                  <button
+                    type="button"
+                    (click)="abrirEditar(fct)"
+                    title="Modificar FCT"
+                    class="p-1.5 text-slate-400 hover:text-amber-300 hover:bg-slate-700/50 rounded transition-colors"
+                  >
+                    <mat-icon class="text-base">edit</mat-icon>
+                  </button>
+
+                  <!-- Eliminar / Inactivar FCT -->
+                  @if (fct.estado === 'Activo') {
+                    <button
+                      type="button"
+                      (click)="abrirInactivar(fct)"
+                      title="Inactivar FCT (Eliminación Lógica)"
+                      class="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-700/50 rounded transition-colors"
+                    >
+                      <mat-icon class="text-base">archive</mat-icon>
+                    </button>
+                  } @else {
+                    <button
+                      type="button"
+                      (click)="reactivarFct(fct)"
+                      title="Reactivar trámite"
+                      class="p-1.5 text-slate-400 hover:text-emerald-400 hover:bg-slate-700/50 rounded transition-colors"
+                    >
+                      <mat-icon class="text-base">unarchive</mat-icon>
+                    </button>
+
+                    @if (fct.solicitudesAsociadas === 0) {
+                      <button
+                        type="button"
+                        (click)="abrirEliminarFisico(fct)"
+                        title="Eliminar físicamente de la base de datos (0 solicitudes)"
+                        class="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-700/50 rounded transition-colors"
+                      >
+                        <mat-icon class="text-base">delete_forever</mat-icon>
+                      </button>
+                    }
+                  }
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="8" class="py-12 text-center text-slate-400">
+                <mat-icon class="text-3xl text-slate-500 mb-2">find_in_page</mat-icon>
+                <div class="text-sm font-medium">No se encontraron trámites FCT</div>
+                <div class="text-xs text-slate-500 mt-1">Ajuste los filtros de búsqueda o registre un nuevo trámite.</div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ======================================================== -->
+  <!-- MODAL: ➕ CREAR FCT (Create) -->
+  <!-- ======================================================== -->
+  @if (modalCrearAbierto()) {
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-crear-fct-title"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs"
+    >
+      <div class="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+          <h3 id="modal-crear-fct-title" class="text-base font-semibold text-slate-100 flex items-center gap-2">
+            <mat-icon class="text-indigo-400">add_circle</mat-icon>
+            Crear FCT — Registro de Trámite
+          </h3>
+          <button
+            type="button"
+            (click)="cerrarCrear()"
+            class="text-slate-400 hover:text-slate-200"
+            aria-label="Cerrar modal"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <form [formGroup]="formCrear" (ngSubmit)="guardarNuevoFct()" class="p-6 space-y-4">
+          <!-- Banner Informativo de Regla de Negocio -->
+          <div class="p-3 bg-slate-800/80 border border-slate-700 rounded-lg text-xs text-slate-300 flex items-start gap-2.5">
+            <mat-icon class="text-base text-indigo-400 shrink-0 mt-0.5">verified_user</mat-icon>
+            <div>
+              <span class="font-semibold text-slate-200">Validación obligatoria:</span>
+              El sistema no permite duplicar nombres de FCT activos. El código identificador generado será único e inmutable una vez creado.
+            </div>
+          </div>
+
+          <!-- Nombre del Trámite (Único) -->
+          <div>
+            <label for="crear-nombre" class="block text-xs font-medium text-slate-300 mb-1">
+              Nombre del trámite <span class="text-rose-400">* (Único entre activos)</span>
+            </label>
+            <input
+              id="crear-nombre"
+              type="text"
+              formControlName="nombre"
+              placeholder="Ej: Autorización de Transporte de Residuos Especiales..."
+              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              [class.border-rose-500]="formCrear.get('nombre')?.touched && formCrear.get('nombre')?.invalid"
+            />
+            @if (formCrear.get('nombre')?.touched && formCrear.get('nombre')?.invalid) {
+              <p class="text-[11px] text-rose-400 mt-1">El nombre del trámite es requerido y debe tener mínimo 4 caracteres.</p>
+            }
+          </div>
+
+          <!-- CdgEm & Código Sugerido -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="crear-cdgem" class="block text-xs font-medium text-slate-300 mb-1">
+                CdgEm - Código de la Empresa <span class="text-rose-400">*</span>
+              </label>
+              <input
+                id="crear-cdgem"
+                type="text"
+                formControlName="cdgEm"
+                placeholder="Ej: EMP-MUNIC-04"
+                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs font-mono text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 uppercase"
+                [class.border-rose-500]="formCrear.get('cdgEm')?.touched && formCrear.get('cdgEm')?.invalid"
+              />
+              @if (formCrear.get('cdgEm')?.touched && formCrear.get('cdgEm')?.invalid) {
+                <p class="text-[11px] text-rose-400 mt-1">El código de la empresa es obligatorio.</p>
+              }
+            </div>
+
+            <div>
+              <label for="crear-codigo" class="block text-xs font-medium text-slate-300 mb-1">
+                Código Identificador FCT <span class="text-slate-400">(Único)</span>
+              </label>
+              <input
+                id="crear-codigo"
+                type="text"
+                formControlName="codigoSugerido"
+                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs font-mono text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 uppercase"
+              />
+              <p class="text-[10px] text-slate-500 mt-1">Será inmutable una vez guardado.</p>
+            </div>
+          </div>
+
+          <!-- Categoría y Plazo -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="crear-categoria" class="block text-xs font-medium text-slate-300 mb-1">
+                Categoría Administrativa <span class="text-rose-400">*</span>
+              </label>
+              <select
+                id="crear-categoria"
+                formControlName="categoria"
+                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              >
+                <option value="Comercio e Industria">Comercio e Industria</option>
+                <option value="Medio Ambiente y Territorio">Medio Ambiente y Territorio</option>
+                <option value="Identificación y Ciudadanía">Identificación y Ciudadanía</option>
+                <option value="Tributario y Hacienda">Tributario y Hacienda</option>
+                <option value="Desarrollo Económico">Desarrollo Económico</option>
+                <option value="Urbanismo y Obras">Urbanismo y Obras</option>
+                <option value="Salud y Seguridad">Salud y Seguridad</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="crear-plazo" class="block text-xs font-medium text-slate-300 mb-1">
+                Plazo Legal de Resolución (días) <span class="text-rose-400">*</span>
+              </label>
+              <input
+                id="crear-plazo"
+                type="number"
+                min="1"
+                max="365"
+                formControlName="plazoDias"
+                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs font-mono text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+
+          <!-- Descripción -->
+          <div>
+            <label for="crear-descripcion" class="block text-xs font-medium text-slate-300 mb-1">
+              Descripción Completa del Trámite <span class="text-rose-400">*</span>
+            </label>
+            <textarea
+              id="crear-descripcion"
+              rows="3"
+              formControlName="descripcion"
+              placeholder="Detalle el objeto legal del trámite, requisitos de ley y alcance para el ciudadano..."
+              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            ></textarea>
+            @if (formCrear.get('descripcion')?.touched && formCrear.get('descripcion')?.invalid) {
+              <p class="text-[11px] text-rose-400 mt-1">La descripción debe tener al menos 10 caracteres.</p>
+            }
+          </div>
+
+          <!-- Botones de Acción -->
+          <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+            <button
+              type="button"
+              (click)="cerrarCrear()"
+              class="px-4 py-2 border border-slate-700 text-slate-300 hover:bg-slate-800 rounded-lg text-xs font-medium transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center gap-1.5 cursor-pointer"
+            >
+              <mat-icon class="text-sm">add_circle</mat-icon>
+              Crear FCT
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- ======================================================== -->
+  <!-- MODAL: 📝 ACTUALIZAR FCT (Update) -->
+  <!-- Restricción: El código identificador único NO es modificable -->
+  <!-- ======================================================== -->
+  @if (modalEditarAbierto(); as fct) {
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-editar-fct-title"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs"
+    >
+      <div class="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+          <h3 id="modal-editar-fct-title" class="text-base font-semibold text-slate-100 flex items-center gap-2">
+            <mat-icon class="text-amber-400">edit_note</mat-icon>
+            Actualizar Trámite FCT
+          </h3>
+          <button
+            type="button"
+            (click)="cerrarEditar()"
+            class="text-slate-400 hover:text-slate-200"
+            aria-label="Cerrar modal"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <form [formGroup]="formEditar" (ngSubmit)="guardarEdicionFct()" class="p-6 space-y-4">
+          <!-- Restricción visual de Código Inmutable -->
+          <div class="p-3 bg-slate-800/80 border border-slate-700 rounded-lg text-xs text-slate-300 flex items-start gap-2.5">
+            <mat-icon class="text-base text-amber-400 shrink-0 mt-0.5">lock</mat-icon>
+            <div>
+              <span class="font-semibold text-slate-200">Restricción de Integridad:</span>
+              El código identificador único <span class="font-mono text-indigo-300">{{ formEditar.get('id')?.value }}</span> es inmutable y no puede ser modificado.
+            </div>
+          </div>
+
+          <!-- Código (Deshabilitado) -->
+          <div>
+            <label for="editar-id" class="block text-xs font-medium text-slate-400 mb-1">
+              Código FCT (Identificador Inmutable)
+            </label>
+            <input
+              id="editar-id"
+              type="text"
+              formControlName="id"
+              class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs font-mono text-slate-400 cursor-not-allowed"
+            />
+          </div>
+
+          <!-- Nombre del Trámite -->
+          <div>
+            <label for="editar-nombre" class="block text-xs font-medium text-slate-300 mb-1">
+              Nombre del trámite <span class="text-rose-400">* (Único entre activos)</span>
+            </label>
+            <input
+              id="editar-nombre"
+              type="text"
+              formControlName="nombre"
+              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            />
+            @if (formEditar.get('nombre')?.touched && formEditar.get('nombre')?.invalid) {
+              <p class="text-[11px] text-rose-400 mt-1">El nombre no puede estar vacío y debe tener al menos 4 caracteres.</p>
+            }
+          </div>
+
+          <!-- CdgEm & Plazo -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="editar-cdgem" class="block text-xs font-medium text-slate-300 mb-1">
+                CdgEm - Código Empresa <span class="text-rose-400">*</span>
+              </label>
+              <input
+                id="editar-cdgem"
+                type="text"
+                formControlName="cdgEm"
+                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs font-mono text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 uppercase"
+              />
+            </div>
+
+            <div>
+              <label for="editar-plazo" class="block text-xs font-medium text-slate-300 mb-1">
+                Plazo de Resolución (días) <span class="text-rose-400">*</span>
+              </label>
+              <input
+                id="editar-plazo"
+                type="number"
+                min="1"
+                max="365"
+                formControlName="plazoDias"
+                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs font-mono text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              />
+            </div>
+          </div>
+
+          <!-- Categoría -->
+          <div>
+            <label for="editar-categoria" class="block text-xs font-medium text-slate-300 mb-1">
+              Categoría Administrativa
+            </label>
+            <input
+              id="editar-categoria"
+              type="text"
+              formControlName="categoria"
+              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            />
+          </div>
+
+          <!-- Descripción -->
+          <div>
+            <label for="editar-descripcion" class="block text-xs font-medium text-slate-300 mb-1">
+              Descripción Completa
+            </label>
+            <textarea
+              id="editar-descripcion"
+              rows="3"
+              formControlName="descripcion"
+              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            ></textarea>
+          </div>
+
+          <!-- Motivo del Cambio (Historial de Auditoría) -->
+          <div>
+            <label for="editar-motivo" class="block text-xs font-medium text-slate-300 mb-1">
+              Motivo o Justificación del Cambio (Historial de Auditoría)
+            </label>
+            <input
+              id="editar-motivo"
+              type="text"
+              formControlName="motivoCambio"
+              placeholder="Ej: Actualización de plazos por resolución municipal No. 104..."
+              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            />
+            <p class="text-[10px] text-slate-500 mt-1">Se guardará en el historial con su usuario y fecha exacta.</p>
+          </div>
+
+          <!-- Botones -->
+          <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+            <button
+              type="button"
+              (click)="cerrarEditar()"
+              class="px-4 py-2 border border-slate-700 text-slate-300 hover:bg-slate-800 rounded-lg text-xs font-medium transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center gap-1.5"
+            >
+              <mat-icon class="text-sm">update</mat-icon>
+              Actualizar FCT
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- ======================================================== -->
+  <!-- MODAL: ❌ INACTIVAR FCT (Eliminación Lógica) -->
+  <!-- Regla de negocio: Si tiene solicitudes, cambiar a Inactivo -->
+  <!-- ======================================================== -->
+  @if (modalInactivarAbierto(); as fct) {
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-inactivar-title"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs"
+    >
+      <div class="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-w-lg w-full">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+          <h3 id="modal-inactivar-title" class="text-base font-semibold text-rose-300 flex items-center gap-2">
+            <mat-icon class="text-rose-400">archive</mat-icon>
+            Inactivar Trámite FCT (Eliminación Lógica)
+          </h3>
+          <button
+            type="button"
+            (click)="cerrarInactivar()"
+            class="text-slate-400 hover:text-slate-200"
+            aria-label="Cerrar modal"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <form [formGroup]="formInactivar" (ngSubmit)="confirmarInactivacion()" class="p-6 space-y-4">
+          @if (fctSeleccionado()?.solicitudesAsociadas! > 0) {
+            <div class="p-3 bg-amber-950/60 border border-amber-700/80 rounded-lg text-xs text-amber-200 space-y-1">
+              <div class="font-semibold flex items-center gap-1.5">
+                <mat-icon class="text-base text-amber-400">policy</mat-icon>
+                Regla de Negocio — Solicitudes Asociadas en Histórico
+              </div>
+              <p>
+                Este trámite posee <span class="font-bold underline">{{ fctSeleccionado()?.solicitudesAsociadas }} solicitudes</span> registradas por ciudadanos. Conforme a las directrices de integridad institucional, <span class="font-bold">no se permite el borrado físico</span>. Se cambiará el estado a <span class="font-bold">Inactivo</span> para que no esté disponible para nuevas solicitudes manteniendo el histórico completo.
+              </p>
+            </div>
+          } @else {
+            <p class="text-xs text-slate-300">
+              ¿Desea inactivar el trámite <span class="font-semibold text-slate-100">{{ fctSeleccionado()?.id }} - {{ fctSeleccionado()?.nombre }}</span>? El trámite dejará de ser visible para los ciudadanos.
+            </p>
+          }
+
+          <div>
+            <label for="inactivar-motivo" class="block text-xs font-medium text-slate-300 mb-1">
+              Motivo de Inactivación <span class="text-rose-400">*</span>
+            </label>
+            <textarea
+              id="inactivar-motivo"
+              rows="3"
+              formControlName="motivo"
+              placeholder="Indique la causa administrativa o normativa de la inactivación..."
+              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-rose-500"
+            ></textarea>
+          </div>
+
+          <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+            <button
+              type="button"
+              (click)="cerrarInactivar()"
+              class="px-4 py-2 border border-slate-700 text-slate-300 hover:bg-slate-800 rounded-lg text-xs font-medium transition-colors"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-semibold shadow-sm transition-colors flex items-center gap-1.5"
+            >
+              <mat-icon class="text-sm">archive</mat-icon>
+              Confirmar Inactivación
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  <!-- ======================================================== -->
+  <!-- MODAL: ELIMINACIÓN FÍSICA (Solo si 0 solicitudes) -->
+  <!-- ======================================================== -->
+  @if (modalEliminarFisicoAbierto(); as fct) {
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-eliminar-fisico-title"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs"
+    >
+      <div class="bg-slate-900 border border-rose-900/80 rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4">
+        <div class="flex items-center gap-3 text-rose-400">
+          <mat-icon class="text-2xl">warning</mat-icon>
+          <h3 id="modal-eliminar-fisico-title" class="text-base font-semibold text-slate-100">
+            Eliminar Trámite FCT Definitivamente
+          </h3>
+        </div>
+
+        <p class="text-xs text-slate-300">
+          El trámite <span class="font-mono text-indigo-300 font-semibold">{{ fctSeleccionado()?.id }}</span> tiene <span class="font-bold text-emerald-400">0 solicitudes asociadas</span>, por lo que es técnicamente apto para borrado físico permanente.
+        </p>
+        <p class="text-xs text-rose-300">
+          Esta acción removerá el registro de la base de datos de manera irreversible.
+        </p>
+
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+          <button
+            type="button"
+            (click)="cerrarEliminarFisico()"
+            class="px-4 py-2 border border-slate-700 text-slate-300 hover:bg-slate-800 rounded-lg text-xs font-medium"
+          >
+            Cancelar
+          </button>
+          <button
+            type="button"
+            (click)="confirmarEliminacionFisica()"
+            class="px-4 py-2 bg-rose-700 hover:bg-rose-600 text-white rounded-lg text-xs font-semibold"
+          >
+            Eliminar Físicamente
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ======================================================== -->
+  <!-- DRAWER: 👁️ CONSULTAR DETALLE COMPLETO FCT (Read Detail) -->
+  <!-- ======================================================== -->
+  @if (drawerDetalleAbierto(); as open) {
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="drawer-detalle-fct-title"
+      class="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs animate-in fade-in"
+    >
+      <div class="bg-slate-900 border-l border-slate-700 w-full max-w-xl h-full flex flex-col shadow-2xl overflow-hidden">
+        <!-- Header del Drawer -->
+        <div class="p-6 border-b border-slate-800 flex items-start justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2">
+              <span class="font-mono text-xs font-bold text-indigo-400 px-2 py-0.5 rounded bg-slate-800 border border-slate-700">
+                {{ fctSeleccionado()?.id }}
+              </span>
+              @if (fctSeleccionado()?.estado === 'Activo') {
+                <span class="text-xs text-emerald-400 font-medium flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  Activo
+                </span>
+              } @else {
+                <span class="text-xs text-slate-400 font-medium flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+                  Inactivo
+                </span>
+              }
+            </div>
+            <h3 id="drawer-detalle-fct-title" class="text-lg font-bold text-slate-100 mt-2">
+              {{ fctSeleccionado()?.nombre }}
+            </h3>
+            <div class="text-xs text-slate-400 mt-1">
+              Empresa: <span class="font-mono text-slate-300 font-medium">{{ fctSeleccionado()?.cdgEm }}</span> · Categoría: {{ fctSeleccionado()?.categoria }}
+            </div>
+          </div>
+
+          <button
+            type="button"
+            (click)="cerrarDetalle()"
+            class="p-1 text-slate-400 hover:text-slate-200 rounded"
+            aria-label="Cerrar panel de detalle"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <!-- Contenido Desplazable -->
+        <div class="flex-1 overflow-y-auto p-6 space-y-6 text-xs text-slate-300">
+          <!-- Descripción -->
+          <div>
+            <h4 class="text-xs font-semibold text-slate-200 uppercase tracking-wider mb-2">Descripción General</h4>
+            <p class="p-3 bg-slate-800/80 border border-slate-700/60 rounded-lg text-slate-300 leading-relaxed">
+              {{ fctSeleccionado()?.descripcion }}
+            </p>
+          </div>
+
+          <!-- Metadatos Clave -->
+          <div class="grid grid-cols-2 gap-3">
+            <div class="p-3 bg-slate-800/60 border border-slate-700/60 rounded-lg">
+              <div class="text-[11px] text-slate-400">Plazo Legal de Resolución</div>
+              <div class="text-base font-bold text-slate-100 font-mono mt-0.5">
+                {{ fctSeleccionado()?.plazoDias }} días hábiles
+              </div>
+            </div>
+            <div class="p-3 bg-slate-800/60 border border-slate-700/60 rounded-lg">
+              <div class="text-[11px] text-slate-400">Solicitudes Ciudadanas</div>
+              <div class="text-base font-bold text-indigo-300 font-mono mt-0.5">
+                {{ fctSeleccionado()?.solicitudesAsociadas }} expedientes
+              </div>
+            </div>
+            <div class="p-3 bg-slate-800/60 border border-slate-700/60 rounded-lg">
+              <div class="text-[11px] text-slate-400">Fecha de Creación</div>
+              <div class="text-xs text-slate-300 font-mono mt-0.5">
+                {{ fctSeleccionado()?.fechaCreacion | date:'medium' }}
+              </div>
+              <div class="text-[10px] text-slate-500 mt-0.5">{{ fctSeleccionado()?.usuarioCreador }}</div>
+            </div>
+            <div class="p-3 bg-slate-800/60 border border-slate-700/60 rounded-lg">
+              <div class="text-[11px] text-slate-400">Última Modificación</div>
+              <div class="text-xs text-slate-300 font-mono mt-0.5">
+                {{ fctSeleccionado()?.fechaModificacion | date:'medium' }}
+              </div>
+              <div class="text-[10px] text-slate-500 mt-0.5">{{ fctSeleccionado()?.usuarioModificador }}</div>
+            </div>
+          </div>
+
+          <!-- Campos Asignados al Trámite -->
+          <div>
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="text-xs font-semibold text-slate-200 uppercase tracking-wider">
+                Campos Configurados ({{ fctSeleccionado()?.camposAsignados?.length || 0 }})
+              </h4>
+              <button
+                type="button"
+                (click)="seleccionarParaDiseno(fctSeleccionado()!); cerrarDetalle()"
+                class="text-xs text-indigo-400 hover:text-indigo-300 font-medium flex items-center gap-1"
+              >
+                <mat-icon class="text-xs">view_quilt</mat-icon>
+                Abrir Diseñador / Asignador CET
+              </button>
+            </div>
+
+            @if (fctSeleccionado()?.camposAsignados?.length) {
+              <div class="space-y-2">
+                @for (campo of fctSeleccionado()?.camposAsignados; track campo.cftCodigo) {
+                  <div class="p-3 bg-slate-800/80 border border-slate-700/60 rounded-lg flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2 min-w-0">
+                      <span class="font-mono text-[10px] text-indigo-400 px-1.5 py-0.5 bg-slate-900 rounded border border-slate-700">
+                        #{{ campo.orden }}
+                      </span>
+                      <div class="truncate">
+                        <div class="font-medium text-slate-200 font-mono text-xs">{{ campo.cftCodigo }}</div>
+                        <div class="text-[11px] text-slate-400">{{ campo.seccion }}</div>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0 text-[11px]">
+                      @if (campo.obligatorio) {
+                        <span class="text-rose-400">Obligatorio</span>
+                      } @else {
+                        <span class="text-slate-500">Opcional</span>
+                      }
+                      <span class="text-slate-600">·</span>
+                      @if (campo.visible) {
+                        <span class="text-emerald-400">Visible</span>
+                      } @else {
+                        <span class="text-slate-500">Oculto</span>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+            } @else {
+              <div class="p-4 bg-slate-800/40 border border-dashed border-slate-700 rounded-lg text-center text-slate-400 text-xs">
+                Este trámite no tiene campos asignados aún. Diríjase a la pantalla del buscador CET para agregarlos.
+              </div>
+            }
+          </div>
+
+          <!-- Historial de Auditoría (Trazabilidad) -->
+          <div>
+            <h4 class="text-xs font-semibold text-slate-200 uppercase tracking-wider mb-2">
+              Historial de Auditoría y Cambios
+            </h4>
+            <div class="space-y-2">
+              @for (h of fctSeleccionado()?.historial; track h.id) {
+                <div class="p-2.5 bg-slate-800/60 border border-slate-700/50 rounded-lg text-xs space-y-1">
+                  <div class="flex items-center justify-between text-[11px]">
+                    <span class="font-semibold text-slate-200">{{ h.accion }}</span>
+                    <span class="font-mono text-slate-500">{{ h.fecha | date:'short' }}</span>
+                  </div>
+                  <p class="text-slate-400 text-[11px]">{{ h.detalles }}</p>
+                  <div class="text-[10px] text-slate-500">Operador: {{ h.usuario }}</div>
+                </div>
+              } @empty {
+                <div class="text-slate-500 text-xs">Sin registros de auditoría previos.</div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer del Drawer -->
+        <div class="p-4 border-t border-slate-800 bg-slate-900/90 flex items-center justify-between">
+          <button
+            type="button"
+            (click)="abrirEditar(fctSeleccionado()!); cerrarDetalle()"
+            class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5"
+          >
+            <mat-icon class="text-sm">edit</mat-icon>
+            Modificar Datos
+          </button>
+          <button
+            type="button"
+            (click)="cerrarDetalle()"
+            class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold"
+          >
+            Cerrar Detalle
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

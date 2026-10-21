@@ -1,0 +1,266 @@
+<div class="space-y-6">
+  <!-- Toast -->
+  @if (mensajeToast(); as toast) {
+    <div
+      role="status"
+      class="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-lg border text-sm font-medium shadow-lg transition-all animate-in fade-in"
+      [class.bg-emerald-950]="toast.tipo === 'exito'"
+      [class.border-emerald-600]="toast.tipo === 'exito'"
+      [class.text-emerald-200]="toast.tipo === 'exito'"
+      [class.bg-rose-950]="toast.tipo === 'error'"
+      [class.border-rose-600]="toast.tipo === 'error'"
+      [class.text-rose-200]="toast.tipo === 'error'"
+    >
+      <mat-icon class="text-lg">
+        @if (toast.tipo === 'exito') { check_circle }
+        @else { error }
+      </mat-icon>
+      <span>{{ toast.texto }}</span>
+      <button
+        type="button"
+        (click)="mensajeToast.set(null)"
+        class="ml-2 hover:opacity-75 focus:outline-none"
+        aria-label="Cerrar notificación"
+      >
+        <mat-icon class="text-base">close</mat-icon>
+      </button>
+    </div>
+  }
+
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800">
+    <div>
+      <h2 class="text-xl font-semibold text-slate-100 flex items-center gap-2">
+        <mat-icon class="text-indigo-400">preview</mat-icon>
+        Simulador Ciudadano — Vista Previa del Formulario
+      </h2>
+      <p class="text-sm text-slate-400 mt-0.5">
+        Verificación de la experiencia del ciudadano con validaciones dinámicas basadas en las definiciones del catálogo CET/CFT.
+      </p>
+    </div>
+
+    <!-- Selector de FCT -->
+    <div class="flex items-center gap-3 shrink-0">
+      <label for="sim-fct-select" class="text-xs text-slate-400 font-medium">Trámite a Previsualizar:</label>
+      @if (fctSeleccionado(); as fct) {
+        <select
+          id="sim-fct-select"
+          [value]="fct.id"
+          (change)="cambiarFct($any($event.target).value)"
+          class="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+        >
+          @for (f of fcts(); track f.id) {
+            <option [value]="f.id">{{ f.id }} — {{ f.nombre }}</option>
+          }
+        </select>
+      }
+    </div>
+  </div>
+
+  <!-- Contenedor del Formulario Ciudadano -->
+  <div class="max-w-4xl mx-auto bg-slate-900 border border-slate-800 rounded-2xl shadow-xl overflow-hidden">
+    <!-- Banner de Ventanilla Electrónica -->
+    @if (fctSeleccionado(); as fct) {
+      <div class="p-6 bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950/40 border-b border-slate-800">
+        <div class="flex items-center justify-between text-xs text-slate-400 mb-2">
+          <span class="font-mono text-indigo-400 font-semibold">{{ fct.cdgEm }}</span>
+          <span class="font-mono">Plazo legal: {{ fct.plazoDias }} días hábiles</span>
+        </div>
+        <h1 class="text-xl font-bold text-slate-100">
+          {{ fct.nombre }}
+        </h1>
+        <p class="text-xs text-slate-300 mt-1.5 leading-relaxed">
+          {{ fct.descripcion }}
+        </p>
+      </div>
+    }
+
+    <!-- Alerta de Radicado Exitoso -->
+    @if (radicadoGenerado(); as rad) {
+      <div class="m-6 p-5 bg-emerald-950/70 border border-emerald-700 rounded-xl text-xs space-y-2 text-emerald-200">
+        <div class="flex items-center gap-2 font-bold text-sm text-emerald-100">
+          <mat-icon class="text-emerald-400">task_alt</mat-icon>
+          ¡Trámite radicado satisfactoriamente!
+        </div>
+        <p>
+          Su solicitud ha sido recibida en el sistema de ventanilla única bajo el número de radicado oficial:
+          <span class="font-mono text-sm font-bold text-white px-2 py-0.5 rounded bg-emerald-900/90 ml-1">{{ rad }}</span>
+        </p>
+        <div class="text-[11px] text-emerald-300">
+          Este envío incrementó el contador de solicitudes asociadas de este trámite a
+          <span class="font-bold font-mono">{{ fctSeleccionado()?.solicitudesAsociadas }}</span>, reforzando la protección por Eliminación Lógica.
+        </div>
+        <div class="pt-2">
+          <button
+            type="button"
+            (click)="reiniciarSimulacion()"
+            class="px-3 py-1 bg-emerald-800 hover:bg-emerald-700 text-white rounded text-xs font-semibold"
+          >
+            Realizar otra prueba de radicación
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Formulario Dinámico de Campos Asignados -->
+    <div class="p-6 space-y-8">
+      @for (sec of seccionesFormulario(); track sec.seccion) {
+        <div class="space-y-4">
+          <div class="border-b border-slate-800 pb-2 flex items-center justify-between">
+            <h3 class="text-xs font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-2">
+              <mat-icon class="text-sm">folder_open</mat-icon>
+              {{ sec.seccion }}
+            </h3>
+            <span class="text-[11px] text-slate-500 font-mono">{{ sec.campos.length }} campos</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            @for (campo of sec.campos; track campo.cftCodigo) {
+              @let snapshot = campo.cftSnapshot;
+              @let err = erroresValidacion()[campo.cftCodigo];
+
+              <div [class.md:col-span-2]="snapshot?.tipoDato === 'Archivo' || snapshot?.longDato! > 150">
+                <label [for]="'sim-campo-' + campo.cftCodigo" class="block text-xs font-medium text-slate-200 mb-1">
+                  {{ snapshot?.nombre || campo.cftCodigo }}
+                  @if (campo.obligatorio) {
+                    <span class="text-rose-400">*</span>
+                  } @else {
+                    <span class="text-slate-500 text-[10px] ml-1">(Opcional)</span>
+                  }
+                </label>
+
+                <!-- Input según tipoDato -->
+                @switch (snapshot?.tipoDato) {
+                  @case ('Booleano') {
+                    <label class="flex items-start gap-2.5 p-3 rounded-lg bg-slate-800/60 border border-slate-700/80 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        [id]="'sim-campo-' + campo.cftCodigo"
+                        [checked]="valoresFormulario()[campo.cftCodigo] || false"
+                        (change)="actualizarValor(campo.cftCodigo, $any($event.target).checked)"
+                        class="rounded bg-slate-900 border-slate-700 text-indigo-600 focus:ring-indigo-500 mt-0.5"
+                      />
+                      <span class="text-xs text-slate-300">
+                        {{ campo.instrucciones || snapshot?.descripcion }}
+                      </span>
+                    </label>
+                  }
+                  @case ('Archivo') {
+                    <div class="p-4 bg-slate-800/40 border border-dashed border-slate-700 rounded-lg text-center space-y-1">
+                      <mat-icon class="text-2xl text-slate-400">upload_file</mat-icon>
+                      <div class="text-xs text-slate-300">Seleccione un archivo para adjuntar</div>
+                      <div class="text-[10px] text-slate-500 font-mono">{{ snapshot?.dominio }}</div>
+                      <input
+                        type="file"
+                        [id]="'sim-campo-' + campo.cftCodigo"
+                        (change)="actualizarValor(campo.cftCodigo, 'archivo_cargado_simulado.pdf')"
+                        class="text-xs text-slate-400 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:text-xs file:bg-slate-700 file:text-slate-200 hover:file:bg-slate-600 cursor-pointer mt-1"
+                      />
+                    </div>
+                  }
+                  @case ('Fecha') {
+                    <input
+                      type="date"
+                      [id]="'sim-campo-' + campo.cftCodigo"
+                      [value]="valoresFormulario()[campo.cftCodigo] || ''"
+                      (input)="actualizarValor(campo.cftCodigo, $any($event.target).value)"
+                      class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono"
+                    />
+                  }
+                  @case ('Numérico') {
+                    <input
+                      type="number"
+                      [id]="'sim-campo-' + campo.cftCodigo"
+                      [value]="valoresFormulario()[campo.cftCodigo] || ''"
+                      (input)="actualizarValor(campo.cftCodigo, $any($event.target).value)"
+                      placeholder="Ingrese valor numérico..."
+                      class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono"
+                    />
+                  }
+                  @case ('Moneda') {
+                    <div class="relative">
+                      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-mono text-xs">$</span>
+                      <input
+                        type="number"
+                        [id]="'sim-campo-' + campo.cftCodigo"
+                        [value]="valoresFormulario()[campo.cftCodigo] || ''"
+                        (input)="actualizarValor(campo.cftCodigo, $any($event.target).value)"
+                        placeholder="0.00"
+                        class="w-full pl-7 pr-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono"
+                      />
+                    </div>
+                  }
+                  @case ('Email') {
+                    <input
+                      type="email"
+                      [id]="'sim-campo-' + campo.cftCodigo"
+                      [value]="valoresFormulario()[campo.cftCodigo] || ''"
+                      (input)="actualizarValor(campo.cftCodigo, $any($event.target).value)"
+                      placeholder="ejemplo@correo.com"
+                      class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 font-mono"
+                    />
+                  }
+                  @default {
+                    <input
+                      type="text"
+                      [id]="'sim-campo-' + campo.cftCodigo"
+                      [value]="valoresFormulario()[campo.cftCodigo] || ''"
+                      (input)="actualizarValor(campo.cftCodigo, $any($event.target).value)"
+                      [placeholder]="campo.instrucciones || snapshot?.descripcion || 'Ingrese dato...'"
+                      [maxLength]="snapshot?.longDato || 255"
+                      class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                    />
+                  }
+                }
+
+                <!-- Mensaje de error si hay -->
+                @if (err) {
+                  <p class="text-[11px] text-rose-400 mt-1 flex items-center gap-1">
+                    <mat-icon class="text-xs">error_outline</mat-icon>
+                    {{ err }}
+                  </p>
+                }
+
+                <!-- Dominio / Instrucción -->
+                @if (snapshot?.dominio) {
+                  <p class="text-[10px] text-slate-500 mt-0.5 font-mono">
+                    Regla: {{ snapshot?.dominio }}
+                  </p>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      } @empty {
+        <div class="p-8 text-center text-slate-400 border border-dashed border-slate-800 rounded-xl">
+          <mat-icon class="text-3xl text-slate-500 mb-1">sentiment_dissatisfied</mat-icon>
+          <div class="text-xs font-semibold">No hay campos asignados en este trámite</div>
+          <p class="text-[11px] text-slate-500 mt-1">
+            Vaya a la pantalla "Buscador y Asignador CET" para agregar los campos necesarios al FCT.
+          </p>
+        </div>
+      }
+
+      <!-- Acciones de Radicación -->
+      @if (camposVisibles().length > 0) {
+        <div class="pt-4 border-t border-slate-800 flex items-center justify-end gap-3">
+          <button
+            type="button"
+            (click)="reiniciarSimulacion()"
+            class="px-4 py-2 border border-slate-700 text-slate-300 hover:bg-slate-800 rounded-lg text-xs font-medium"
+          >
+            Limpiar Formulario
+          </button>
+          <button
+            type="button"
+            (click)="simularRadicacion()"
+            class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold shadow-md transition-colors flex items-center gap-2"
+          >
+            <mat-icon class="text-sm">send</mat-icon>
+            Radicar Solicitud Ciudadana
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,183 @@
+<div class="min-h-screen flex flex-col bg-slate-950 text-slate-100">
+  <!-- Top Bar Contract: 3 Zones separated by gap-8 -->
+  <!-- Zone 1: Single text element wordmark -->
+  <!-- Zone 2: 4 clean single-line nav links/tabs -->
+  <!-- Zone 3: 1 primary action -->
+  <header class="flex items-center justify-between gap-8 px-6 py-4 border-b border-slate-800 bg-slate-900/90 backdrop-blur-md sticky top-0 z-40">
+    <!-- Zone 1: Brand Wordmark -->
+    <a
+      href="#"
+      (click)="$event.preventDefault(); setVista('fct')"
+      class="text-base font-bold tracking-tight text-white whitespace-nowrap shrink-0 flex items-center gap-2"
+    >
+      <mat-icon class="text-indigo-400">account_tree</mat-icon>
+      Diseñador de Trámites
+    </a>
+
+    <!-- Zone 2: Nav Tabs (4 single-line controls) -->
+    <nav class="hidden md:flex items-center gap-1 bg-slate-950/80 p-1 rounded-xl border border-slate-800 shrink-0">
+      <button
+        type="button"
+        (click)="setVista('fct')"
+        class="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap shrink-0"
+        [class.bg-indigo-600]="vistaActiva() === 'fct'"
+        [class.text-white]="vistaActiva() === 'fct'"
+        [class.text-slate-400]="vistaActiva() !== 'fct'"
+        [class.hover:text-slate-200]="vistaActiva() !== 'fct'"
+      >
+        <mat-icon class="text-sm">tune</mat-icon>
+        Diseñador FCT (CRUD)
+      </button>
+
+      <button
+        type="button"
+        (click)="setVista('buscador-cet')"
+        class="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap shrink-0"
+        [class.bg-indigo-600]="vistaActiva() === 'buscador-cet'"
+        [class.text-white]="vistaActiva() === 'buscador-cet'"
+        [class.text-slate-400]="vistaActiva() !== 'buscador-cet'"
+        [class.hover:text-slate-200]="vistaActiva() !== 'buscador-cet'"
+      >
+        <mat-icon class="text-sm">manage_search</mat-icon>
+        Buscador CET & Asignación
+      </button>
+
+      <button
+        type="button"
+        (click)="setVista('cft')"
+        class="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap shrink-0"
+        [class.bg-indigo-600]="vistaActiva() === 'cft'"
+        [class.text-white]="vistaActiva() === 'cft'"
+        [class.text-slate-400]="vistaActiva() !== 'cft'"
+        [class.hover:text-slate-200]="vistaActiva() !== 'cft'"
+      >
+        <mat-icon class="text-sm">dataset</mat-icon>
+        Catálogo CFT (CRUD)
+      </button>
+
+      <button
+        type="button"
+        (click)="setVista('simulador')"
+        class="flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap shrink-0"
+        [class.bg-indigo-600]="vistaActiva() === 'simulador'"
+        [class.text-white]="vistaActiva() === 'simulador'"
+        [class.text-slate-400]="vistaActiva() !== 'simulador'"
+        [class.hover:text-slate-200]="vistaActiva() !== 'simulador'"
+      >
+        <mat-icon class="text-sm">preview</mat-icon>
+        Simulador Ciudadano
+      </button>
+    </nav>
+
+    <!-- Zone 3: 1 Primary Action -->
+    <div class="flex items-center gap-3 shrink-0">
+      <button
+        type="button"
+        (click)="reiniciarDatos()"
+        title="Restablecer trámites y catálogo con datos oficiales de demostración"
+        class="px-3 py-1.5 text-xs font-medium text-slate-300 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-lg transition-colors whitespace-nowrap shrink-0 flex items-center gap-1.5"
+      >
+        <mat-icon class="text-sm">restart_alt</mat-icon>
+        Restaurar Catálogo
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Nav (Visible on small screens) -->
+  <div class="md:hidden flex items-center gap-1 px-4 py-2 bg-slate-900 border-b border-slate-800 overflow-x-auto">
+    <button
+      type="button"
+      (click)="setVista('fct')"
+      class="px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap"
+      [class.bg-indigo-600]="vistaActiva() === 'fct'"
+      [class.text-white]="vistaActiva() === 'fct'"
+      [class.text-slate-400]="vistaActiva() !== 'fct'"
+    >
+      FCT (CRUD)
+    </button>
+    <button
+      type="button"
+      (click)="setVista('buscador-cet')"
+      class="px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap"
+      [class.bg-indigo-600]="vistaActiva() === 'buscador-cet'"
+      [class.text-white]="vistaActiva() === 'buscador-cet'"
+      [class.text-slate-400]="vistaActiva() !== 'buscador-cet'"
+    >
+      Buscador CET
+    </button>
+    <button
+      type="button"
+      (click)="setVista('cft')"
+      class="px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap"
+      [class.bg-indigo-600]="vistaActiva() === 'cft'"
+      [class.text-white]="vistaActiva() === 'cft'"
+      [class.text-slate-400]="vistaActiva() !== 'cft'"
+    >
+      CFT (CRUD)
+    </button>
+    <button
+      type="button"
+      (click)="setVista('simulador')"
+      class="px-3 py-1.5 text-xs font-medium rounded-lg whitespace-nowrap"
+      [class.bg-indigo-600]="vistaActiva() === 'simulador'"
+      [class.text-white]="vistaActiva() === 'simulador'"
+      [class.text-slate-400]="vistaActiva() !== 'simulador'"
+    >
+      Simulador
+    </button>
+  </div>
+
+  <!-- Context Breadcrumbs / Metadata Strip (No pills discipline) -->
+  <div class="px-6 py-2.5 bg-slate-900/40 border-b border-slate-800/80 text-xs text-slate-400 flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-2">
+      <span class="text-slate-200 font-semibold">Espacio de Trabajo:</span>
+      <span>Ventanilla Única de Trámites</span>
+      @if (fctSeleccionado(); as fct) {
+        <span aria-hidden="true">·</span>
+        <span class="text-indigo-400 font-mono">{{ fct.id }}</span>
+        <span aria-hidden="true">·</span>
+        <span class="text-slate-300 font-medium">{{ fct.nombre }}</span>
+      }
+    </div>
+
+    <div class="flex items-center gap-3 text-[11px] text-slate-500 font-mono">
+      <span>Operador: jalban.dacompsc&#64;gmail.com</span>
+      <span aria-hidden="true">·</span>
+      <span>{{ fcts().length }} FCT en sistema</span>
+      <span aria-hidden="true">·</span>
+      <span>{{ cfts().length }} CFT en catálogo</span>
+    </div>
+  </div>
+
+  <!-- Main Viewport -->
+  <main class="flex-1 px-4 sm:px-6 lg:px-8 py-6 max-w-7xl w-full mx-auto">
+    @switch (vistaActiva()) {
+      @case ('fct') {
+        <app-fct-crud></app-fct-crud>
+      }
+      @case ('buscador-cet') {
+        <app-buscador-cet></app-buscador-cet>
+      }
+      @case ('cft') {
+        <app-cft-crud></app-cft-crud>
+      }
+      @case ('simulador') {
+        <app-simulador-tramite></app-simulador-tramite>
+      }
+    }
+  </main>
+
+  <!-- Minimal Institutional Footer (No telemetry tickers) -->
+  <footer class="border-t border-slate-800 bg-slate-950 px-6 py-4 text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-3 mt-auto">
+    <div>
+      Sistema Diseñador de Trámites Institucionales — Módulo FCT, CFT y CET.
+    </div>
+    <div class="flex items-center gap-4 text-slate-400">
+      <span>Gobernanza de Datos</span>
+      <span aria-hidden="true">·</span>
+      <span>Reglas de Integridad y Eliminación Lógica</span>
+      <span aria-hidden="true">·</span>
+      <span>2026</span>
+    </div>
+  </footer>
+</div>

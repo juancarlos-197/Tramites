@@ -1,0 +1,6 @@
+{
+  "name": "Diseñador de Trámites FCT & CFT",
+  "description": "Plataforma de diseño y configuración de trámites gubernamentales y corporativos: gestión CRUD de FCT, catálogo de campos CET/CFT y buscador avanzado de asignación.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

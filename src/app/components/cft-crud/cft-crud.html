@@ -4,15 +4,15 @@
     <div
       role="status"
       class="fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-lg border text-sm font-medium shadow-lg transition-all animate-in fade-in"
-      [class.bg-emerald-950]="toast.tipo === 'exito'"
-      [class.border-emerald-600]="toast.tipo === 'exito'"
-      [class.text-emerald-200]="toast.tipo === 'exito'"
-      [class.bg-rose-950]="toast.tipo === 'error'"
-      [class.border-rose-600]="toast.tipo === 'error'"
-      [class.text-rose-200]="toast.tipo === 'error'"
-      [class.bg-amber-950]="toast.tipo === 'aviso'"
-      [class.border-amber-600]="toast.tipo === 'aviso'"
-      [class.text-amber-200]="toast.tipo === 'aviso'"
+      [class.bg-emerald-50]="toast.tipo === 'exito'"
+      [class.border-emerald-300]="toast.tipo === 'exito'"
+      [class.text-emerald-800]="toast.tipo === 'exito'"
+      [class.bg-rose-50]="toast.tipo === 'error'"
+      [class.border-rose-300]="toast.tipo === 'error'"
+      [class.text-rose-800]="toast.tipo === 'error'"
+      [class.bg-amber-50]="toast.tipo === 'aviso'"
+      [class.border-amber-300]="toast.tipo === 'aviso'"
+      [class.text-amber-800]="toast.tipo === 'aviso'"
     >
       <mat-icon class="text-lg">
         @if (toast.tipo === 'exito') { check_circle }
@@ -23,7 +23,7 @@
       <button
         type="button"
         (click)="mensajeToast.set(null)"
-        class="ml-2 hover:opacity-75 focus:outline-none"
+        class="ml-2 hover:opacity-75 focus:outline-none cursor-pointer"
         aria-label="Cerrar notificación"
       >
         <mat-icon class="text-base">close</mat-icon>
@@ -32,61 +32,62 @@
   }
 
   <!-- Header / Action Bar -->
-  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-800">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200">
     <div>
-      <h2 class="text-xl font-semibold text-slate-100 flex items-center gap-2">
-        <mat-icon class="text-indigo-400">dataset</mat-icon>
+      <h2 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+        <mat-icon class="text-indigo-600">dataset</mat-icon>
         Diseñador de Trámites — Catálogo CFT / CET (CRUD)
       </h2>
-      <p class="text-sm text-slate-400 mt-0.5">
+      <p class="text-sm text-slate-500 mt-0.5">
         Definición y gobierno de Campos y Elementos de Trámites (CET/CFT): tipos de datos, validaciones técnicas y dominios.
       </p>
     </div>
 
     <div class="flex items-center gap-3 shrink-0">
+      <!-- Botón Crear CFT (Botón Blanco con borde y sombra suave) -->
       <button
         type="button"
         (click)="abrirCrear()"
-        class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-xs font-semibold rounded-lg shadow-sm hover:shadow-md hover:shadow-indigo-500/20 transition-all focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-slate-900 focus:outline-none cursor-pointer whitespace-nowrap"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-800 hover:text-indigo-600 border border-slate-300 hover:border-slate-400 text-xs font-semibold rounded-lg shadow-xs hover:shadow-sm transition-all focus:ring-2 focus:ring-indigo-400 focus:outline-none cursor-pointer whitespace-nowrap"
       >
-        <mat-icon class="text-base">add</mat-icon>
+        <mat-icon class="text-base text-indigo-600">add_circle</mat-icon>
         Crear CFT
       </button>
     </div>
   </div>
 
-  <!-- Operational Metrics Strip (Tabular Numerals) -->
+  <!-- Operational Metrics Strip (Tabular Numerals) - White cards -->
   <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-    <div class="p-3.5 bg-slate-800/80 border border-slate-700/60 rounded-xl">
-      <div class="text-xs text-slate-400 font-medium">Total Elementos en Catálogo</div>
-      <div class="text-2xl font-bold text-slate-100 font-mono tabular-nums mt-1">{{ totalCft() }}</div>
-      <div class="text-[11px] text-slate-500 mt-0.5">Campos maestros registrados</div>
+    <div class="p-3.5 bg-white border border-slate-200 rounded-xl shadow-xs">
+      <div class="text-xs text-slate-500 font-medium">Total Elementos en Catálogo</div>
+      <div class="text-2xl font-bold text-slate-900 font-mono tabular-nums mt-1">{{ totalCft() }}</div>
+      <div class="text-[11px] text-slate-400 mt-0.5">Campos maestros registrados</div>
     </div>
-    <div class="p-3.5 bg-slate-800/80 border border-slate-700/60 rounded-xl">
-      <div class="text-xs text-emerald-400 font-medium flex items-center gap-1">
+    <div class="p-3.5 bg-white border border-slate-200 rounded-xl shadow-xs">
+      <div class="text-xs text-emerald-600 font-medium flex items-center gap-1">
         <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
         Campos Activos
       </div>
-      <div class="text-2xl font-bold text-emerald-300 font-mono tabular-nums mt-1">{{ activosCft() }}</div>
-      <div class="text-[11px] text-slate-500 mt-0.5">Disponibles para asignar</div>
+      <div class="text-2xl font-bold text-emerald-700 font-mono tabular-nums mt-1">{{ activosCft() }}</div>
+      <div class="text-[11px] text-slate-400 mt-0.5">Disponibles para asignar</div>
     </div>
-    <div class="p-3.5 bg-slate-800/80 border border-slate-700/60 rounded-xl">
-      <div class="text-xs text-slate-400 font-medium flex items-center gap-1">
-        <span class="inline-block w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+    <div class="p-3.5 bg-white border border-slate-200 rounded-xl shadow-xs">
+      <div class="text-xs text-slate-500 font-medium flex items-center gap-1">
+        <span class="inline-block w-1.5 h-1.5 rounded-full bg-slate-400"></span>
         Campos Inactivos
       </div>
-      <div class="text-2xl font-bold text-slate-400 font-mono tabular-nums mt-1">{{ inactivosCft() }}</div>
-      <div class="text-[11px] text-slate-500 mt-0.5">Preservados por integridad</div>
+      <div class="text-2xl font-bold text-slate-600 font-mono tabular-nums mt-1">{{ inactivosCft() }}</div>
+      <div class="text-[11px] text-slate-400 mt-0.5">Preservados por integridad</div>
     </div>
-    <div class="p-3.5 bg-slate-800/80 border border-slate-700/60 rounded-xl">
-      <div class="text-xs text-indigo-400 font-medium">Tipos / Categorías</div>
-      <div class="text-2xl font-bold text-indigo-300 font-mono tabular-nums mt-1">{{ tiposDisponibles().length }}</div>
-      <div class="text-[11px] text-slate-500 mt-0.5">Dimensiones del formulario</div>
+    <div class="p-3.5 bg-white border border-slate-200 rounded-xl shadow-xs">
+      <div class="text-xs text-indigo-600 font-medium">Tipos / Categorías</div>
+      <div class="text-2xl font-bold text-indigo-700 font-mono tabular-nums mt-1">{{ tiposDisponibles().length }}</div>
+      <div class="text-[11px] text-slate-400 mt-0.5">Dimensiones del formulario</div>
     </div>
   </div>
 
-  <!-- Filters Toolbar (Read / Consultar) -->
-  <div class="p-4 bg-slate-800/60 border border-slate-700/60 rounded-xl space-y-3">
+  <!-- Filters Toolbar (Read / Consultar) - White background -->
+  <div class="p-4 bg-white border border-slate-200 rounded-xl shadow-xs space-y-3">
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
       <!-- Search Input -->
       <div class="relative flex-1">
@@ -96,13 +97,13 @@
           [value]="filtroTexto()"
           (input)="filtroTexto.set($any($event.target).value)"
           placeholder="Buscar CFT por nombre, código (ej: CFT-DOC-ID), tipo de dato o dominio..."
-          class="w-full pl-10 pr-4 py-2 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          class="w-full pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 shadow-2xs"
         />
         @if (filtroTexto()) {
           <button
             type="button"
             (click)="filtroTexto.set('')"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 text-xs"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs cursor-pointer"
             aria-label="Limpiar búsqueda"
           >
             <mat-icon class="text-sm">close</mat-icon>
@@ -111,36 +112,40 @@
       </div>
 
       <!-- Segmented Estado Filter -->
-      <div class="flex items-center gap-1 p-1 bg-slate-900 border border-slate-700/80 rounded-lg shrink-0">
+      <div class="flex items-center gap-1 p-1 bg-slate-100 border border-slate-200 rounded-lg shrink-0">
         <button
           type="button"
           (click)="filtroEstado.set('Todos')"
-          class="px-3 py-1.5 text-xs font-medium rounded transition-colors whitespace-nowrap"
-          [class.bg-slate-800]="filtroEstado() === 'Todos'"
-          [class.text-white]="filtroEstado() === 'Todos'"
-          [class.text-slate-400]="filtroEstado() !== 'Todos'"
+          class="px-3 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap cursor-pointer"
+          [class.bg-white]="filtroEstado() === 'Todos'"
+          [class.text-slate-900]="filtroEstado() === 'Todos'"
+          [class.shadow-xs]="filtroEstado() === 'Todos'"
+          [class.font-semibold]="filtroEstado() === 'Todos'"
+          [class.text-slate-600]="filtroEstado() !== 'Todos'"
         >
           Todos ({{ totalCft() }})
         </button>
         <button
           type="button"
           (click)="filtroEstado.set('Activo')"
-          class="px-3 py-1.5 text-xs font-medium rounded transition-colors whitespace-nowrap"
-          [class.bg-emerald-950]="filtroEstado() === 'Activo'"
-          [class.text-emerald-300]="filtroEstado() === 'Activo'"
-          [class.border]="filtroEstado() === 'Activo'"
-          [class.border-emerald-800]="filtroEstado() === 'Activo'"
-          [class.text-slate-400]="filtroEstado() !== 'Activo'"
+          class="px-3 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap cursor-pointer"
+          [class.bg-white]="filtroEstado() === 'Activo'"
+          [class.text-emerald-700]="filtroEstado() === 'Activo'"
+          [class.shadow-xs]="filtroEstado() === 'Activo'"
+          [class.font-semibold]="filtroEstado() === 'Activo'"
+          [class.text-slate-600]="filtroEstado() !== 'Activo'"
         >
           Activos ({{ activosCft() }})
         </button>
         <button
           type="button"
           (click)="filtroEstado.set('Inactivo')"
-          class="px-3 py-1.5 text-xs font-medium rounded transition-colors whitespace-nowrap"
-          [class.bg-slate-800]="filtroEstado() === 'Inactivo'"
-          [class.text-slate-300]="filtroEstado() === 'Inactivo'"
-          [class.text-slate-400]="filtroEstado() !== 'Inactivo'"
+          class="px-3 py-1.5 text-xs font-medium rounded-md transition-all whitespace-nowrap cursor-pointer"
+          [class.bg-white]="filtroEstado() === 'Inactivo'"
+          [class.text-slate-700]="filtroEstado() === 'Inactivo'"
+          [class.shadow-xs]="filtroEstado() === 'Inactivo'"
+          [class.font-semibold]="filtroEstado() === 'Inactivo'"
+          [class.text-slate-600]="filtroEstado() !== 'Inactivo'"
         >
           Inactivos ({{ inactivosCft() }})
         </button>
@@ -148,12 +153,12 @@
 
       <!-- Filter by Tipo -->
       <div class="flex items-center gap-2 shrink-0">
-        <label for="filtroTipo" class="text-xs text-slate-400 font-medium whitespace-nowrap">Tipo:</label>
+        <label for="filtroTipo" class="text-xs text-slate-500 font-medium whitespace-nowrap">Tipo:</label>
         <select
           id="filtroTipo"
           [value]="filtroTipo()"
           (change)="filtroTipo.set($any($event.target).value)"
-          class="py-1.5 px-2.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          class="py-1.5 px-2.5 bg-white border border-slate-300 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs cursor-pointer"
         >
           <option value="Todos">Todos los tipos</option>
           @for (tipo of tiposDisponibles(); track tipo) {
@@ -164,12 +169,12 @@
 
       <!-- Filter by TipoDato -->
       <div class="flex items-center gap-2 shrink-0">
-        <label for="filtroTipoDato" class="text-xs text-slate-400 font-medium whitespace-nowrap">Dato:</label>
+        <label for="filtroTipoDato" class="text-xs text-slate-500 font-medium whitespace-nowrap">Dato:</label>
         <select
           id="filtroTipoDato"
           [value]="filtroTipoDato()"
           (change)="filtroTipoDato.set($any($event.target).value)"
-          class="py-1.5 px-2.5 bg-slate-900 border border-slate-700 rounded-lg text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+          class="py-1.5 px-2.5 bg-white border border-slate-300 rounded-lg text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs cursor-pointer"
         >
           <option value="Todos">Todos</option>
           <option value="Texto">Texto</option>
@@ -186,12 +191,12 @@
     </div>
   </div>
 
-  <!-- Table Container (Read) -->
-  <div class="bg-slate-800/80 border border-slate-700/60 rounded-xl overflow-hidden shadow-sm">
+  <!-- Table Container (CRUD Table - Clean White Design) -->
+  <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
     <div class="overflow-x-auto">
       <table class="w-full text-left border-collapse text-xs">
         <thead>
-          <tr class="bg-slate-900/80 border-b border-slate-700 text-slate-400 font-medium uppercase tracking-wider">
+          <tr class="bg-white border-b-2 border-slate-200 text-slate-700 font-bold uppercase tracking-wider text-[11px]">
             <th scope="col" class="py-3 px-4">Código</th>
             <th scope="col" class="py-3 px-4">Nombre del Campo</th>
             <th scope="col" class="py-3 px-4">Tipo</th>
@@ -203,96 +208,96 @@
             <th scope="col" class="py-3 px-4 text-right">Acciones</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-slate-700/50">
+        <tbody class="divide-y divide-slate-100 bg-white">
           @for (cft of cftsFiltrados(); track trackByCft($index, cft)) {
             <tr
-              class="hover:bg-slate-700/30 transition-colors"
+              class="bg-white hover:bg-slate-50/70 transition-colors"
               [class.opacity-60]="cft.estado === 'Inactivo'"
             >
               <!-- Código -->
-              <td class="py-3 px-4 font-mono font-semibold text-slate-200 whitespace-nowrap">
-                {{ cft.codigo }}
+              <td class="py-3.5 px-4 font-mono font-semibold text-slate-900 whitespace-nowrap">
+                <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-indigo-700 text-xs shadow-2xs font-bold">
+                  {{ cft.codigo }}
+                </span>
               </td>
 
               <!-- Nombre -->
-              <td class="py-3 px-4">
+              <td class="py-3.5 px-4">
                 <button
                   type="button"
                   (click)="abrirDetalle(cft)"
-                  class="font-semibold text-slate-100 hover:text-indigo-400 text-left transition-colors block text-sm"
+                  class="font-semibold text-slate-900 hover:text-indigo-600 text-left transition-colors block text-sm cursor-pointer"
                 >
                   {{ cft.nombre }}
                 </button>
-                <div class="text-[11px] text-slate-400 truncate max-w-sm mt-0.5">
+                <div class="text-[11px] text-slate-500 truncate max-w-sm mt-0.5">
                   {{ cft.descripcion }}
                 </div>
               </td>
 
               <!-- Tipo -->
-              <td class="py-3 px-4 text-slate-300 whitespace-nowrap">
-                <span class="px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-[11px]">
+              <td class="py-3.5 px-4 text-slate-700 whitespace-nowrap">
+                <span class="px-2 py-0.5 rounded bg-white border border-slate-200 text-[11px] font-medium text-slate-700 shadow-2xs">
                   {{ cft.tipo }}
                 </span>
               </td>
 
               <!-- Tipo Dato -->
-              <td class="py-3 px-4 whitespace-nowrap">
-                <span class="font-mono text-indigo-300 text-xs">{{ cft.tipoDato }}</span>
+              <td class="py-3.5 px-4 whitespace-nowrap">
+                <span class="font-mono text-indigo-700 font-semibold text-xs">{{ cft.tipoDato }}</span>
               </td>
 
               <!-- Longitud / Decimales -->
-              <td class="py-3 px-4 text-center font-mono tabular-nums text-slate-300 whitespace-nowrap">
-                <span>{{ cft.longDato }}</span>
+              <td class="py-3.5 px-4 text-center font-mono tabular-nums text-slate-700 whitespace-nowrap">
+                <span class="font-semibold">{{ cft.longDato }}</span>
                 @if (cft.longDec > 0) {
-                  <span class="text-slate-500">.{{ cft.longDec }}</span>
+                  <span class="text-slate-400">.{{ cft.longDec }}</span>
                 }
               </td>
 
               <!-- Acceso -->
-              <td class="py-3 px-4 text-slate-300 whitespace-nowrap">
+              <td class="py-3.5 px-4 text-slate-700 whitespace-nowrap">
                 <span>{{ cft.acceso }}</span>
               </td>
 
               <!-- En Trámites (FCT) -->
-              <td class="py-3 px-4 text-center font-mono tabular-nums text-slate-300 whitespace-nowrap">
+              <td class="py-3.5 px-4 text-center font-mono tabular-nums text-slate-700 whitespace-nowrap">
                 @let uso = conteoUso(cft.codigo);
                 <span
-                  class="px-2 py-0.5 rounded text-[11px]"
-                  [class.bg-slate-900]="uso === 0"
+                  class="px-2 py-0.5 rounded text-[11px] font-semibold bg-white border shadow-2xs"
                   [class.text-slate-500]="uso === 0"
-                  [class.bg-indigo-950]="uso > 0"
-                  [class.text-indigo-300]="uso > 0"
-                  [class.border]="uso > 0"
-                  [class.border-indigo-800]="uso > 0"
+                  [class.border-slate-200]="uso === 0"
+                  [class.text-indigo-700]="uso > 0"
+                  [class.border-indigo-200]="uso > 0"
                 >
                   {{ uso }} FCT
                 </span>
               </td>
 
               <!-- Estado -->
-              <td class="py-3 px-4 whitespace-nowrap">
+              <td class="py-3.5 px-4 whitespace-nowrap">
                 @if (cft.estado === 'Activo') {
-                  <span class="inline-flex items-center gap-1.5 text-xs text-emerald-400 font-medium">
+                  <span class="inline-flex items-center gap-1.5 text-xs text-emerald-700 font-semibold">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                     Activo
                   </span>
                 } @else {
-                  <span class="inline-flex items-center gap-1.5 text-xs text-slate-400 font-medium">
-                    <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+                  <span class="inline-flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+                    <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
                     Inactivo
                   </span>
                 }
               </td>
 
-              <!-- Acciones -->
-              <td class="py-3 px-4 text-right whitespace-nowrap">
-                <div class="inline-flex items-center gap-1">
+              <!-- Acciones (Botones Blancos) -->
+              <td class="py-3.5 px-4 text-right whitespace-nowrap">
+                <div class="inline-flex items-center gap-1.5">
                   <!-- Ver Detalle -->
                   <button
                     type="button"
                     (click)="abrirDetalle(cft)"
                     title="Ver detalle de configuración"
-                    class="p-1.5 text-slate-400 hover:text-slate-200 hover:bg-slate-700/50 rounded transition-colors"
+                    class="p-1.5 bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg shadow-2xs transition-colors cursor-pointer"
                   >
                     <mat-icon class="text-base">visibility</mat-icon>
                   </button>
@@ -302,7 +307,7 @@
                     type="button"
                     (click)="abrirEditar(cft)"
                     title="Modificar CFT (Código inmutable)"
-                    class="p-1.5 text-slate-400 hover:text-amber-300 hover:bg-slate-700/50 rounded transition-colors"
+                    class="p-1.5 bg-white text-slate-600 hover:text-amber-600 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-lg shadow-2xs transition-colors cursor-pointer"
                   >
                     <mat-icon class="text-base">edit</mat-icon>
                   </button>
@@ -313,7 +318,7 @@
                       type="button"
                       (click)="abrirInactivar(cft)"
                       title="Inactivar CFT (Eliminación Lógica)"
-                      class="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-700/50 rounded transition-colors"
+                      class="p-1.5 bg-white text-slate-600 hover:text-rose-600 hover:bg-rose-50/50 border border-slate-200 hover:border-rose-200 rounded-lg shadow-2xs transition-colors cursor-pointer"
                     >
                       <mat-icon class="text-base">archive</mat-icon>
                     </button>
@@ -322,7 +327,7 @@
                       type="button"
                       (click)="reactivarCft(cft)"
                       title="Reactivar CFT"
-                      class="p-1.5 text-slate-400 hover:text-emerald-400 hover:bg-slate-700/50 rounded transition-colors"
+                      class="p-1.5 bg-white text-slate-600 hover:text-emerald-600 hover:bg-emerald-50/50 border border-slate-200 hover:border-emerald-200 rounded-lg shadow-2xs transition-colors cursor-pointer"
                     >
                       <mat-icon class="text-base">unarchive</mat-icon>
                     </button>
@@ -332,7 +337,7 @@
                         type="button"
                         (click)="abrirEliminarFisico(cft)"
                         title="Eliminar permanentemente (no asignado a ningún trámite)"
-                        class="p-1.5 text-slate-400 hover:text-rose-400 hover:bg-slate-700/50 rounded transition-colors"
+                        class="p-1.5 bg-white text-slate-600 hover:text-rose-600 hover:bg-rose-50/50 border border-slate-200 hover:border-rose-200 rounded-lg shadow-2xs transition-colors cursor-pointer"
                       >
                         <mat-icon class="text-base">delete_forever</mat-icon>
                       </button>
@@ -344,9 +349,9 @@
           } @empty {
             <tr>
               <td colspan="9" class="py-12 text-center text-slate-400">
-                <mat-icon class="text-3xl text-slate-500 mb-2">find_in_page</mat-icon>
-                <div class="text-sm font-medium">No se encontraron campos CFT coincidentes</div>
-                <div class="text-xs text-slate-500 mt-1">Ajuste los filtros o registre un nuevo elemento en el catálogo.</div>
+                <mat-icon class="text-3xl text-slate-400 mb-2">find_in_page</mat-icon>
+                <div class="text-sm font-semibold text-slate-700">No se encontraron campos CFT coincidentes</div>
+                <div class="text-xs text-slate-400 mt-1">Ajuste los filtros o registre un nuevo elemento en el catálogo.</div>
               </td>
             </tr>
           }
@@ -356,27 +361,25 @@
   </div>
 
   <!-- ======================================================== -->
-  <!-- MODAL: ➕ CREAR CFT (Create) -->
-  <!-- Campos requeridos: Código, Tipo, Nombre -->
-  <!-- Validación: No permitir duplicar nombres de CFT activos -->
+  <!-- MODAL: ➕ CREAR CFT (Create) - Clean White Layout -->
   <!-- ======================================================== -->
   @if (modalCrearAbierto()) {
     <div
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-crear-cft-title"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs"
     >
-      <div class="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
-          <h3 id="modal-crear-cft-title" class="text-base font-semibold text-slate-100 flex items-center gap-2">
-            <mat-icon class="text-indigo-400">add_circle</mat-icon>
-            Registrar Nuevo Campo en Catálogo (CFT / CET)
+      <div class="bg-white border border-slate-200 rounded-xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+          <h3 id="modal-crear-cft-title" class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <mat-icon class="text-indigo-600">add_circle</mat-icon>
+            Crear CFT — Registrar Campo en Catálogo
           </h3>
           <button
             type="button"
             (click)="cerrarCrear()"
-            class="text-slate-400 hover:text-slate-200"
+            class="text-slate-400 hover:text-slate-600 cursor-pointer"
             aria-label="Cerrar modal"
           >
             <mat-icon>close</mat-icon>
@@ -385,10 +388,10 @@
 
         <form [formGroup]="formCrear" (ngSubmit)="guardarNuevoCft()" class="p-6 space-y-4">
           <!-- Regla de negocio -->
-          <div class="p-3 bg-slate-800/80 border border-slate-700 rounded-lg text-xs text-slate-300 flex items-start gap-2.5">
-            <mat-icon class="text-base text-indigo-400 shrink-0 mt-0.5">verified_user</mat-icon>
+          <div class="p-3 bg-indigo-50/70 border border-indigo-200 rounded-lg text-xs text-indigo-900 flex items-start gap-2.5">
+            <mat-icon class="text-base text-indigo-600 shrink-0 mt-0.5">verified_user</mat-icon>
             <div>
-              <span class="font-semibold text-slate-200">Requisitos normativos:</span>
+              <span class="font-bold text-indigo-950">Requisitos normativos:</span>
               Son obligatorios: <span class="font-bold">Código</span>, <span class="font-bold">Tipo</span> y <span class="font-bold">Nombre</span>. El sistema no permite duplicar nombres de campos activos.
             </div>
           </div>
@@ -396,30 +399,30 @@
           <!-- Código y Tipo (Requeridos) -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label for="cft-crear-codigo" class="block text-xs font-medium text-slate-300 mb-1">
-                Código del Campo <span class="text-rose-400">* (Requerido / Único)</span>
+              <label for="cft-crear-codigo" class="block text-xs font-semibold text-slate-700 mb-1">
+                Código del Campo <span class="text-rose-500">* (Requerido / Único)</span>
               </label>
               <input
                 id="cft-crear-codigo"
                 type="text"
                 formControlName="codigo"
                 placeholder="Ej: CFT-NUM-001"
-                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs font-mono text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500 uppercase"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 uppercase shadow-2xs"
                 [class.border-rose-500]="formCrear.get('codigo')?.touched && formCrear.get('codigo')?.invalid"
               />
               @if (formCrear.get('codigo')?.touched && formCrear.get('codigo')?.invalid) {
-                <p class="text-[11px] text-rose-400 mt-1">El código es requerido (mínimo 3 caracteres).</p>
+                <p class="text-[11px] text-rose-600 mt-1 font-medium">El código es requerido (mínimo 3 caracteres).</p>
               }
             </div>
 
             <div>
-              <label for="cft-crear-tipo" class="block text-xs font-medium text-slate-300 mb-1">
-                Tipo <span class="text-rose-400">* (Requerido)</span>
+              <label for="cft-crear-tipo" class="block text-xs font-semibold text-slate-700 mb-1">
+                Tipo <span class="text-rose-500">* (Requerido)</span>
               </label>
               <select
                 id="cft-crear-tipo"
                 formControlName="tipo"
-                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs cursor-pointer"
               >
                 <option value="Datos Ciudadano">Datos Ciudadano</option>
                 <option value="Variables del Trámite">Variables del Trámite</option>
@@ -434,32 +437,32 @@
 
           <!-- Nombre del Campo (Requerido y Único entre activos) -->
           <div>
-            <label for="cft-crear-nombre" class="block text-xs font-medium text-slate-300 mb-1">
-              Nombre del Campo <span class="text-rose-400">* (Requerido / Único entre activos)</span>
+            <label for="cft-crear-nombre" class="block text-xs font-semibold text-slate-700 mb-1">
+              Nombre del Campo <span class="text-rose-500">* (Requerido / Único entre activos)</span>
             </label>
             <input
               id="cft-crear-nombre"
               type="text"
               formControlName="nombre"
               placeholder="Ej: Monto de Liquidación Tributaria Anual..."
-              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs"
               [class.border-rose-500]="formCrear.get('nombre')?.touched && formCrear.get('nombre')?.invalid"
             />
             @if (formCrear.get('nombre')?.touched && formCrear.get('nombre')?.invalid) {
-              <p class="text-[11px] text-rose-400 mt-1">El nombre del campo es requerido.</p>
+              <p class="text-[11px] text-rose-600 mt-1 font-medium">El nombre del campo es requerido.</p>
             }
           </div>
 
           <!-- Tipo de Dato, LongDato y LongDec -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label for="cft-crear-tipodato" class="block text-xs font-medium text-slate-300 mb-1">
-                TipoDato <span class="text-rose-400">*</span>
+              <label for="cft-crear-tipodato" class="block text-xs font-semibold text-slate-700 mb-1">
+                TipoDato <span class="text-rose-500">*</span>
               </label>
               <select
                 id="cft-crear-tipodato"
                 formControlName="tipoDato"
-                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs cursor-pointer"
               >
                 <option value="Texto">Texto</option>
                 <option value="Numérico">Numérico</option>
@@ -474,8 +477,8 @@
             </div>
 
             <div>
-              <label for="cft-crear-longdato" class="block text-xs font-medium text-slate-300 mb-1">
-                LongDato (Longitud) <span class="text-rose-400">*</span>
+              <label for="cft-crear-longdato" class="block text-xs font-semibold text-slate-700 mb-1">
+                LongDato (Longitud) <span class="text-rose-500">*</span>
               </label>
               <input
                 id="cft-crear-longdato"
@@ -483,13 +486,13 @@
                 min="1"
                 max="5000"
                 formControlName="longDato"
-                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs font-mono text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs"
               />
             </div>
 
             <div>
-              <label for="cft-crear-longdec" class="block text-xs font-medium text-slate-300 mb-1">
-                LongDec (Decimales) <span class="text-rose-400">*</span>
+              <label for="cft-crear-longdec" class="block text-xs font-semibold text-slate-700 mb-1">
+                LongDec (Decimales) <span class="text-rose-500">*</span>
               </label>
               <input
                 id="cft-crear-longdec"
@@ -497,7 +500,7 @@
                 min="0"
                 max="6"
                 formControlName="longDec"
-                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs font-mono text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs"
               />
             </div>
           </div>
@@ -505,13 +508,13 @@
           <!-- Acceso, Visible y Obligatorio -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label for="cft-crear-acceso" class="block text-xs font-medium text-slate-300 mb-1">
-                Acceso <span class="text-rose-400">*</span>
+              <label for="cft-crear-acceso" class="block text-xs font-semibold text-slate-700 mb-1">
+                Acceso <span class="text-rose-500">*</span>
               </label>
               <select
                 id="cft-crear-acceso"
                 formControlName="acceso"
-                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs cursor-pointer"
               >
                 <option value="Lectura/Escritura">Lectura/Escritura</option>
                 <option value="Lectura">Lectura</option>
@@ -521,22 +524,22 @@
             </div>
 
             <div class="flex items-center pt-5">
-              <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-200">
+              <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-800">
                 <input
                   type="checkbox"
                   formControlName="visible"
-                  class="rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-indigo-500"
+                  class="rounded bg-white border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                 />
                 Visible en Formulario
               </label>
             </div>
 
             <div class="flex items-center pt-5">
-              <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-200">
+              <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-800">
                 <input
                   type="checkbox"
                   formControlName="obligatorio"
-                  class="rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-indigo-500"
+                  class="rounded bg-white border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                 />
                 Obligatorio por defecto
               </label>
@@ -545,7 +548,7 @@
 
           <!-- Dominio (Valores permitidos, Reglas, Catálogo) -->
           <div>
-            <label for="cft-crear-dominio" class="block text-xs font-medium text-slate-300 mb-1">
+            <label for="cft-crear-dominio" class="block text-xs font-semibold text-slate-700 mb-1">
               Dominio (Valores permitidos, catálogo o expresión regular)
             </label>
             <input
@@ -553,13 +556,13 @@
               type="text"
               formControlName="dominio"
               placeholder="Ej: Rango: 0 a 1000000 | Valores: Si, No, N/A | Expresión regex..."
-              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs"
             />
           </div>
 
           <!-- Descripción -->
           <div>
-            <label for="cft-crear-desc" class="block text-xs font-medium text-slate-300 mb-1">
+            <label for="cft-crear-desc" class="block text-xs font-semibold text-slate-700 mb-1">
               Descripción y Alcance Técnico
             </label>
             <textarea
@@ -567,25 +570,25 @@
               rows="2"
               formControlName="descripcion"
               placeholder="Detalle el propósito de este campo en el diseño de trámites..."
-              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs"
             ></textarea>
           </div>
 
           <!-- Botones -->
-          <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+          <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
             <button
               type="button"
               (click)="cerrarCrear()"
-              class="px-4 py-2 border border-slate-700 text-slate-300 hover:bg-slate-800 rounded-lg text-xs font-medium"
+              class="px-4 py-2 border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-medium cursor-pointer"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold shadow-sm flex items-center gap-1.5"
+              class="px-4 py-2 bg-white hover:bg-slate-50 active:bg-slate-100 text-indigo-700 border border-slate-300 hover:border-indigo-400 rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer"
             >
-              <mat-icon class="text-sm">save</mat-icon>
-              Guardar en Catálogo
+              <mat-icon class="text-sm text-indigo-600">add_circle</mat-icon>
+              Crear CFT
             </button>
           </div>
         </form>
@@ -594,7 +597,7 @@
   }
 
   <!-- ======================================================== -->
-  <!-- MODAL: 📝 ACTUALIZAR CFT (Update) -->
+  <!-- MODAL: 📝 ACTUALIZAR CFT (Update) - Clean White Layout -->
   <!-- Restricción: El código identificador único del CFT NO es modificable -->
   <!-- ======================================================== -->
   @if (modalEditarAbierto(); as cft) {
@@ -602,18 +605,18 @@
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-editar-cft-title"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs"
     >
-      <div class="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
-          <h3 id="modal-editar-cft-title" class="text-base font-semibold text-slate-100 flex items-center gap-2">
-            <mat-icon class="text-amber-400">edit_note</mat-icon>
+      <div class="bg-white border border-slate-200 rounded-xl shadow-2xl max-w-xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+          <h3 id="modal-editar-cft-title" class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <mat-icon class="text-amber-600">edit_note</mat-icon>
             Actualizar Elemento de Catálogo (CFT / CET)
           </h3>
           <button
             type="button"
             (click)="cerrarEditar()"
-            class="text-slate-400 hover:text-slate-200"
+            class="text-slate-400 hover:text-slate-600 cursor-pointer"
             aria-label="Cerrar modal"
           >
             <mat-icon>close</mat-icon>
@@ -622,37 +625,37 @@
 
         <form [formGroup]="formEditar" (ngSubmit)="guardarEdicionCft()" class="p-6 space-y-4">
           <!-- Restricción visual de Código Inmutable -->
-          <div class="p-3 bg-slate-800/80 border border-slate-700 rounded-lg text-xs text-slate-300 flex items-start gap-2.5">
-            <mat-icon class="text-base text-amber-400 shrink-0 mt-0.5">lock</mat-icon>
+          <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-900 flex items-start gap-2.5">
+            <mat-icon class="text-base text-amber-600 shrink-0 mt-0.5">lock</mat-icon>
             <div>
-              <span class="font-semibold text-slate-200">Restricción de Integridad:</span>
-              El código identificador único <span class="font-mono text-indigo-300">{{ formEditar.get('codigo')?.value }}</span> no debe ser modificable para salvaguardar la coherencia en trámites ya configurados.
+              <span class="font-bold text-amber-950">Restricción de Integridad:</span>
+              El código identificador único <span class="font-mono text-indigo-700 font-semibold">{{ formEditar.get('codigo')?.value }}</span> no debe ser modificable para salvaguardar la coherencia en trámites ya configurados.
             </div>
           </div>
 
           <!-- Código (Deshabilitado) -->
           <div>
-            <label for="cft-editar-codigo" class="block text-xs font-medium text-slate-400 mb-1">
+            <label for="cft-editar-codigo" class="block text-xs font-semibold text-slate-500 mb-1">
               Código CFT (Identificador Inmutable)
             </label>
             <input
               id="cft-editar-codigo"
               type="text"
               formControlName="codigo"
-              class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-lg text-xs font-mono text-slate-400 cursor-not-allowed"
+              class="w-full px-3 py-2 bg-slate-100 border border-slate-300 rounded-lg text-xs font-mono text-slate-600 cursor-not-allowed"
             />
           </div>
 
           <!-- Tipo y Nombre -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label for="cft-editar-tipo" class="block text-xs font-medium text-slate-300 mb-1">
-                Tipo <span class="text-rose-400">*</span>
+              <label for="cft-editar-tipo" class="block text-xs font-semibold text-slate-700 mb-1">
+                Tipo <span class="text-rose-500">*</span>
               </label>
               <select
                 id="cft-editar-tipo"
                 formControlName="tipo"
-                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs cursor-pointer"
               >
                 <option value="Datos Ciudadano">Datos Ciudadano</option>
                 <option value="Variables del Trámite">Variables del Trámite</option>
@@ -665,14 +668,14 @@
             </div>
 
             <div>
-              <label for="cft-editar-nombre" class="block text-xs font-medium text-slate-300 mb-1">
-                Nombre del Campo <span class="text-rose-400">* (Único entre activos)</span>
+              <label for="cft-editar-nombre" class="block text-xs font-semibold text-slate-700 mb-1">
+                Nombre del Campo <span class="text-rose-500">* (Único entre activos)</span>
               </label>
               <input
                 id="cft-editar-nombre"
                 type="text"
                 formControlName="nombre"
-                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs"
               />
             </div>
           </div>
@@ -680,13 +683,13 @@
           <!-- TipoDato, LongDato y LongDec -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label for="cft-editar-tipodato" class="block text-xs font-medium text-slate-300 mb-1">
-                TipoDato <span class="text-rose-400">*</span>
+              <label for="cft-editar-tipodato" class="block text-xs font-semibold text-slate-700 mb-1">
+                TipoDato <span class="text-rose-500">*</span>
               </label>
               <select
                 id="cft-editar-tipodato"
                 formControlName="tipoDato"
-                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs cursor-pointer"
               >
                 <option value="Texto">Texto</option>
                 <option value="Numérico">Numérico</option>
@@ -701,28 +704,28 @@
             </div>
 
             <div>
-              <label for="cft-editar-longdato" class="block text-xs font-medium text-slate-300 mb-1">
-                LongDato <span class="text-rose-400">*</span>
+              <label for="cft-editar-longdato" class="block text-xs font-semibold text-slate-700 mb-1">
+                LongDato <span class="text-rose-500">*</span>
               </label>
               <input
                 id="cft-editar-longdato"
                 type="number"
                 min="1"
                 formControlName="longDato"
-                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs font-mono text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs"
               />
             </div>
 
             <div>
-              <label for="cft-editar-longdec" class="block text-xs font-medium text-slate-300 mb-1">
-                LongDec <span class="text-rose-400">*</span>
+              <label for="cft-editar-longdec" class="block text-xs font-semibold text-slate-700 mb-1">
+                LongDec <span class="text-rose-500">*</span>
               </label>
               <input
                 id="cft-editar-longdec"
                 type="number"
                 min="0"
                 formControlName="longDec"
-                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs font-mono text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs"
               />
             </div>
           </div>
@@ -730,13 +733,13 @@
           <!-- Acceso, Visible y Obligatorio -->
           <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label for="cft-editar-acceso" class="block text-xs font-medium text-slate-300 mb-1">
-                Acceso <span class="text-rose-400">*</span>
+              <label for="cft-editar-acceso" class="block text-xs font-semibold text-slate-700 mb-1">
+                Acceso <span class="text-rose-500">*</span>
               </label>
               <select
                 id="cft-editar-acceso"
                 formControlName="acceso"
-                class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs cursor-pointer"
               >
                 <option value="Lectura/Escritura">Lectura/Escritura</option>
                 <option value="Lectura">Lectura</option>
@@ -746,22 +749,22 @@
             </div>
 
             <div class="flex items-center pt-5">
-              <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-200">
+              <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-800">
                 <input
                   type="checkbox"
                   formControlName="visible"
-                  class="rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-indigo-500"
+                  class="rounded bg-white border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                 />
                 Visible
               </label>
             </div>
 
             <div class="flex items-center pt-5">
-              <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-200">
+              <label class="flex items-center gap-2 cursor-pointer text-xs text-slate-800">
                 <input
                   type="checkbox"
                   formControlName="obligatorio"
-                  class="rounded bg-slate-800 border-slate-700 text-indigo-600 focus:ring-indigo-500"
+                  class="rounded bg-white border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                 />
                 Obligatorio
               </label>
@@ -770,33 +773,33 @@
 
           <!-- Dominio -->
           <div>
-            <label for="cft-editar-dominio" class="block text-xs font-medium text-slate-300 mb-1">
+            <label for="cft-editar-dominio" class="block text-xs font-semibold text-slate-700 mb-1">
               Dominio
             </label>
             <input
               id="cft-editar-dominio"
               type="text"
               formControlName="dominio"
-              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs"
             />
           </div>
 
           <!-- Descripción -->
           <div>
-            <label for="cft-editar-desc" class="block text-xs font-medium text-slate-300 mb-1">
+            <label for="cft-editar-desc" class="block text-xs font-semibold text-slate-700 mb-1">
               Descripción
             </label>
             <textarea
               id="cft-editar-desc"
               rows="2"
               formControlName="descripcion"
-              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs"
             ></textarea>
           </div>
 
           <!-- Motivo (Historial) -->
           <div>
-            <label for="cft-editar-motivo" class="block text-xs font-medium text-slate-300 mb-1">
+            <label for="cft-editar-motivo" class="block text-xs font-semibold text-slate-700 mb-1">
               Motivo de la Modificación (Trazabilidad)
             </label>
             <input
@@ -804,24 +807,24 @@
               type="text"
               formControlName="motivo"
               placeholder="Indique el motivo técnico o legal del cambio..."
-              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 shadow-2xs"
             />
           </div>
 
           <!-- Botones -->
-          <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+          <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
             <button
               type="button"
               (click)="cerrarEditar()"
-              class="px-4 py-2 border border-slate-700 text-slate-300 hover:bg-slate-800 rounded-lg text-xs font-medium"
+              class="px-4 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-medium cursor-pointer shadow-2xs"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              class="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg text-xs font-semibold shadow-sm flex items-center gap-1.5"
+              class="px-4 py-2 bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-800 border border-slate-300 hover:border-slate-400 rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer"
             >
-              <mat-icon class="text-sm">update</mat-icon>
+              <mat-icon class="text-sm text-amber-600">update</mat-icon>
               Actualizar CFT
             </button>
           </div>
@@ -838,18 +841,18 @@
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-inactivar-cft-title"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs"
     >
-      <div class="bg-slate-900 border border-slate-700 rounded-xl shadow-2xl max-w-lg w-full">
-        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-800">
-          <h3 id="modal-inactivar-cft-title" class="text-base font-semibold text-rose-300 flex items-center gap-2">
-            <mat-icon class="text-rose-400">archive</mat-icon>
+      <div class="bg-white border border-slate-200 rounded-xl shadow-2xl max-w-lg w-full">
+        <div class="flex items-center justify-between px-6 py-4 border-b border-slate-200">
+          <h3 id="modal-inactivar-cft-title" class="text-base font-bold text-rose-700 flex items-center gap-2">
+            <mat-icon class="text-rose-600">archive</mat-icon>
             Inactivar Elemento de Catálogo (Eliminación Lógica)
           </h3>
           <button
             type="button"
             (click)="cerrarInactivar()"
-            class="text-slate-400 hover:text-slate-200"
+            class="text-slate-400 hover:text-slate-600 cursor-pointer"
             aria-label="Cerrar modal"
           >
             <mat-icon>close</mat-icon>
@@ -859,9 +862,9 @@
         <form [formGroup]="formInactivar" (ngSubmit)="confirmarInactivacion()" class="p-6 space-y-4">
           @let uso = conteoUso(cftSeleccionado()?.codigo || '');
           @if (uso > 0) {
-            <div class="p-3 bg-amber-950/60 border border-amber-700/80 rounded-lg text-xs text-amber-200 space-y-1">
-              <div class="font-semibold flex items-center gap-1.5">
-                <mat-icon class="text-base text-amber-400">policy</mat-icon>
+            <div class="p-3 bg-amber-50 border border-amber-300 rounded-lg text-xs text-amber-900 space-y-1">
+              <div class="font-bold flex items-center gap-1.5 text-amber-950">
+                <mat-icon class="text-base text-amber-600">policy</mat-icon>
                 Regla de Negocio — Campo asignado en trámites
               </div>
               <p>
@@ -869,37 +872,37 @@
               </p>
             </div>
           } @else {
-            <p class="text-xs text-slate-300">
-              ¿Desea inactivar el campo <span class="font-semibold text-slate-100">{{ cftSeleccionado()?.codigo }} - {{ cftSeleccionado()?.nombre }}</span>?
+            <p class="text-xs text-slate-700">
+              ¿Desea inactivar el campo <span class="font-semibold text-slate-900">{{ cftSeleccionado()?.codigo }} - {{ cftSeleccionado()?.nombre }}</span>?
             </p>
           }
 
           <div>
-            <label for="cft-inactivar-motivo" class="block text-xs font-medium text-slate-300 mb-1">
-              Motivo de Inactivación <span class="text-rose-400">*</span>
+            <label for="cft-inactivar-motivo" class="block text-xs font-semibold text-slate-700 mb-1">
+              Motivo de Inactivación <span class="text-rose-500">*</span>
             </label>
             <textarea
               id="cft-inactivar-motivo"
               rows="3"
               formControlName="motivo"
               placeholder="Indique la justificación para inactivar este campo en el catálogo..."
-              class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg text-xs text-slate-100 focus:outline-none focus:ring-1 focus:ring-rose-500"
+              class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-rose-500 shadow-2xs"
             ></textarea>
           </div>
 
-          <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+          <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
             <button
               type="button"
               (click)="cerrarInactivar()"
-              class="px-4 py-2 border border-slate-700 text-slate-300 hover:bg-slate-800 rounded-lg text-xs font-medium"
+              class="px-4 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-medium cursor-pointer shadow-2xs"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-semibold shadow-sm flex items-center gap-1.5"
+              class="px-4 py-2 bg-white hover:bg-rose-50 active:bg-rose-100 text-rose-700 border border-slate-300 hover:border-rose-300 rounded-lg text-xs font-bold shadow-xs flex items-center gap-1.5 cursor-pointer"
             >
-              <mat-icon class="text-sm">archive</mat-icon>
+              <mat-icon class="text-sm text-rose-600">archive</mat-icon>
               Confirmar Inactivación
             </button>
           </div>
@@ -916,36 +919,37 @@
       role="dialog"
       aria-modal="true"
       aria-labelledby="modal-eliminar-cft-fisico-title"
-      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-xs"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-xs"
     >
-      <div class="bg-slate-900 border border-rose-900/80 rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4">
-        <div class="flex items-center gap-3 text-rose-400">
+      <div class="bg-white border border-slate-200 rounded-xl shadow-2xl max-w-md w-full p-6 space-y-4">
+        <div class="flex items-center gap-3 text-rose-600">
           <mat-icon class="text-2xl">warning</mat-icon>
-          <h3 id="modal-eliminar-cft-fisico-title" class="text-base font-semibold text-slate-100">
+          <h3 id="modal-eliminar-cft-fisico-title" class="text-base font-bold text-slate-900">
             Eliminar Campo Permanentemente
           </h3>
         </div>
 
-        <p class="text-xs text-slate-300">
-          El campo <span class="font-mono text-indigo-300 font-semibold">{{ cftSeleccionado()?.codigo }}</span> no está asignado a ningún trámite activo ni tiene dependencias.
+        <p class="text-xs text-slate-700">
+          El campo <span class="font-mono text-indigo-700 font-semibold">{{ cftSeleccionado()?.codigo }}</span> no está asignado a ningún trámite activo ni tiene dependencias.
         </p>
-        <p class="text-xs text-rose-300">
+        <p class="text-xs text-rose-700">
           ¿Desea borrarlo físicamente del catálogo maestro?
         </p>
 
-        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+        <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-200">
           <button
             type="button"
             (click)="cerrarEliminarFisico()"
-            class="px-4 py-2 border border-slate-700 text-slate-300 hover:bg-slate-800 rounded-lg text-xs font-medium"
+            class="px-4 py-2 bg-white border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-medium cursor-pointer shadow-2xs"
           >
             Cancelar
           </button>
           <button
             type="button"
             (click)="confirmarEliminacionFisica()"
-            class="px-4 py-2 bg-rose-700 hover:bg-rose-600 text-white rounded-lg text-xs font-semibold"
+            class="px-4 py-2 bg-white hover:bg-rose-50 text-rose-700 border border-slate-300 hover:border-rose-300 rounded-lg text-xs font-bold cursor-pointer shadow-xs flex items-center gap-1.5"
           >
+            <mat-icon class="text-sm text-rose-600">delete_forever</mat-icon>
             Eliminar Definitivamente
           </button>
         </div>
@@ -954,85 +958,85 @@
   }
 
   <!-- ======================================================== -->
-  <!-- DRAWER: 👁️ CONSULTAR DETALLE COMPLETO CFT (Read Detail) -->
+  <!-- DRAWER: 👁️ CONSULTAR DETALLE COMPLETO CFT (Read Detail) - Clean White Layout -->
   <!-- ======================================================== -->
   @if (drawerDetalleAbierto(); as open) {
     <div
       role="dialog"
       aria-modal="true"
       aria-labelledby="drawer-detalle-cft-title"
-      class="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs animate-in fade-in"
+      class="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-xs animate-in fade-in"
     >
-      <div class="bg-slate-900 border-l border-slate-700 w-full max-w-xl h-full flex flex-col shadow-2xl overflow-hidden">
-        <div class="p-6 border-b border-slate-800 flex items-start justify-between gap-4">
+      <div class="bg-white border-l border-slate-200 w-full max-w-xl h-full flex flex-col shadow-2xl overflow-hidden">
+        <div class="p-6 border-b border-slate-200 flex items-start justify-between gap-4 bg-slate-50">
           <div>
             <div class="flex items-center gap-2">
-              <span class="font-mono text-xs font-bold text-indigo-400 px-2 py-0.5 rounded bg-slate-800 border border-slate-700">
+              <span class="font-mono text-xs font-bold text-indigo-700 px-2 py-0.5 rounded bg-white border border-slate-200 shadow-2xs">
                 {{ cftSeleccionado()?.codigo }}
               </span>
               @if (cftSeleccionado()?.estado === 'Activo') {
-                <span class="text-xs text-emerald-400 font-medium flex items-center gap-1">
+                <span class="text-xs text-emerald-700 font-semibold flex items-center gap-1">
                   <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
                   Activo
                 </span>
               } @else {
-                <span class="text-xs text-slate-400 font-medium flex items-center gap-1">
-                  <span class="w-1.5 h-1.5 rounded-full bg-slate-500"></span>
+                <span class="text-xs text-slate-500 font-medium flex items-center gap-1">
+                  <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
                   Inactivo
                 </span>
               }
             </div>
-            <h3 id="drawer-detalle-cft-title" class="text-lg font-bold text-slate-100 mt-2">
+            <h3 id="drawer-detalle-cft-title" class="text-lg font-bold text-slate-900 mt-2">
               {{ cftSeleccionado()?.nombre }}
             </h3>
-            <div class="text-xs text-slate-400 mt-1">
-              Tipo: <span class="text-slate-300 font-medium">{{ cftSeleccionado()?.tipo }}</span> · Tipo de Dato: <span class="font-mono text-indigo-300">{{ cftSeleccionado()?.tipoDato }}</span>
+            <div class="text-xs text-slate-500 mt-1">
+              Tipo: <span class="text-slate-800 font-semibold">{{ cftSeleccionado()?.tipo }}</span> · Tipo de Dato: <span class="font-mono text-indigo-700 font-semibold">{{ cftSeleccionado()?.tipoDato }}</span>
             </div>
           </div>
 
           <button
             type="button"
             (click)="cerrarDetalle()"
-            class="p-1 text-slate-400 hover:text-slate-200 rounded"
+            class="p-1 text-slate-400 hover:text-slate-600 rounded cursor-pointer"
             aria-label="Cerrar panel de detalle"
           >
             <mat-icon>close</mat-icon>
           </button>
         </div>
 
-        <div class="flex-1 overflow-y-auto p-6 space-y-6 text-xs text-slate-300">
+        <div class="flex-1 overflow-y-auto p-6 space-y-6 text-xs text-slate-700">
           <div>
-            <h4 class="text-xs font-semibold text-slate-200 uppercase tracking-wider mb-2">Descripción Funcional</h4>
-            <p class="p-3 bg-slate-800/80 border border-slate-700/60 rounded-lg text-slate-300 leading-relaxed">
+            <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">Descripción Funcional</h4>
+            <p class="p-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-800 leading-relaxed">
               {{ cftSeleccionado()?.descripcion }}
             </p>
           </div>
 
           <!-- Especificaciones Técnicas -->
           <div>
-            <h4 class="text-xs font-semibold text-slate-200 uppercase tracking-wider mb-2">Especificaciones Técnicas</h4>
+            <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">Especificaciones Técnicas</h4>
             <div class="grid grid-cols-2 gap-3">
-              <div class="p-3 bg-slate-800/60 border border-slate-700/60 rounded-lg">
-                <div class="text-[11px] text-slate-400">Longitud Máxima (LongDato)</div>
-                <div class="text-base font-bold text-slate-100 font-mono mt-0.5">
+              <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                <div class="text-[11px] text-slate-500">Longitud Máxima (LongDato)</div>
+                <div class="text-base font-bold text-slate-900 font-mono mt-0.5">
                   {{ cftSeleccionado()?.longDato }} caracteres
                 </div>
               </div>
-              <div class="p-3 bg-slate-800/60 border border-slate-700/60 rounded-lg">
-                <div class="text-[11px] text-slate-400">Longitud Decimales (LongDec)</div>
-                <div class="text-base font-bold text-slate-100 font-mono mt-0.5">
+              <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                <div class="text-[11px] text-slate-500">Longitud Decimales (LongDec)</div>
+                <div class="text-base font-bold text-slate-900 font-mono mt-0.5">
                   {{ cftSeleccionado()?.longDec }} decimales
                 </div>
               </div>
-              <div class="p-3 bg-slate-800/60 border border-slate-700/60 rounded-lg">
-                <div class="text-[11px] text-slate-400">Nivel de Acceso</div>
-                <div class="text-xs font-medium text-slate-200 mt-0.5">
+              <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                <div class="text-[11px] text-slate-500">Nivel de Acceso</div>
+                <div class="text-xs font-semibold text-slate-800 mt-0.5">
                   {{ cftSeleccionado()?.acceso }}
                 </div>
               </div>
-              <div class="p-3 bg-slate-800/60 border border-slate-700/60 rounded-lg">
-                <div class="text-[11px] text-slate-400">Visibilidad / Obligatoriedad</div>
-                <div class="text-xs font-medium text-slate-200 mt-0.5">
+              <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                <div class="text-[11px] text-slate-500">Visibilidad / Obligatoriedad</div>
+                <div class="text-xs font-semibold text-slate-800 mt-0.5">
                   {{ cftSeleccionado()?.visible ? 'Visible' : 'Oculto' }} · {{ cftSeleccionado()?.obligatorio ? 'Obligatorio' : 'Opcional' }}
                 </div>
               </div>
@@ -1041,28 +1045,28 @@
 
           <!-- Dominio -->
           <div>
-            <h4 class="text-xs font-semibold text-slate-200 uppercase tracking-wider mb-2">Reglas de Dominio y Validación</h4>
-            <div class="p-3 bg-slate-800/80 border border-slate-700/60 rounded-lg font-mono text-indigo-300 text-xs">
+            <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">Reglas de Dominio y Validación</h4>
+            <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg font-mono text-indigo-700 text-xs font-semibold">
               {{ cftSeleccionado()?.dominio }}
             </div>
           </div>
 
           <!-- Trámites FCT que usan este campo -->
           <div>
-            <h4 class="text-xs font-semibold text-slate-200 uppercase tracking-wider mb-2">
+            <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">
               Asignado en Trámites ({{ tramitesQueUsanSeleccionado().length }})
             </h4>
             <div class="space-y-2">
               @for (tram of tramitesQueUsanSeleccionado(); track tram.id) {
-                <div class="p-2.5 bg-slate-800/60 border border-slate-700/50 rounded-lg flex items-center justify-between">
+                <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
                   <div>
-                    <span class="font-mono text-indigo-400 font-semibold text-xs">{{ tram.id }}</span>
-                    <span class="text-slate-300 ml-2 font-medium">{{ tram.nombre }}</span>
+                    <span class="font-mono text-indigo-700 font-semibold text-xs">{{ tram.id }}</span>
+                    <span class="text-slate-800 ml-2 font-medium">{{ tram.nombre }}</span>
                   </div>
                   <span class="text-[11px] text-slate-500 font-mono">{{ tram.cdgEm }}</span>
                 </div>
               } @empty {
-                <div class="p-3 bg-slate-800/40 border border-dashed border-slate-700 rounded-lg text-slate-500 text-center text-xs">
+                <div class="p-3 bg-slate-50 border border-dashed border-slate-300 rounded-lg text-slate-400 text-center text-xs">
                   Este campo aún no ha sido asignado a ningún trámite.
                 </div>
               }
@@ -1071,29 +1075,29 @@
 
           <!-- Historial -->
           <div>
-            <h4 class="text-xs font-semibold text-slate-200 uppercase tracking-wider mb-2">Historial de Cambios</h4>
+            <h4 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2">Historial de Cambios</h4>
             <div class="space-y-2">
               @for (h of cftSeleccionado()?.historial; track h.id) {
-                <div class="p-2.5 bg-slate-800/60 border border-slate-700/50 rounded-lg text-xs space-y-1">
+                <div class="p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs space-y-1">
                   <div class="flex items-center justify-between text-[11px]">
-                    <span class="font-semibold text-slate-200">{{ h.accion }}</span>
-                    <span class="font-mono text-slate-500">{{ h.fecha | date:'short' }}</span>
+                    <span class="font-bold text-slate-900">{{ h.accion }}</span>
+                    <span class="font-mono text-slate-400">{{ h.fecha | date:'short' }}</span>
                   </div>
-                  <p class="text-slate-400 text-[11px]">{{ h.detalles }}</p>
-                  <div class="text-[10px] text-slate-500">Operador: {{ h.usuario }}</div>
+                  <p class="text-slate-600 text-[11px]">{{ h.detalles }}</p>
+                  <div class="text-[10px] text-slate-400">Operador: {{ h.usuario }}</div>
                 </div>
               } @empty {
-                <div class="text-slate-500 text-xs">Sin registros de cambios previos.</div>
+                <div class="text-slate-400 text-xs">Sin registros de cambios previos.</div>
               }
             </div>
           </div>
         </div>
 
-        <div class="p-4 border-t border-slate-800 bg-slate-900/90 flex items-center justify-between">
+        <div class="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between">
           <button
             type="button"
             (click)="abrirEditar(cftSeleccionado()!); cerrarDetalle()"
-            class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 rounded-lg text-xs font-medium flex items-center gap-1.5"
+            class="px-3 py-1.5 bg-white hover:bg-slate-100 text-slate-700 border border-slate-300 rounded-lg text-xs font-medium flex items-center gap-1.5 cursor-pointer shadow-2xs"
           >
             <mat-icon class="text-sm">edit</mat-icon>
             Modificar Datos
@@ -1101,7 +1105,7 @@
           <button
             type="button"
             (click)="cerrarDetalle()"
-            class="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold"
+            class="px-4 py-1.5 bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 rounded-lg text-xs font-semibold cursor-pointer shadow-xs"
           >
             Cerrar Detalle
           </button>
